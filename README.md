@@ -1,3 +1,3 @@
-### bott-appetit
+### bot-appetit
 
 A restaurant chatbot
