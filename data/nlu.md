@@ -1,37 +1,14 @@
-## intent:greet
-- hey
-- hello
-- hi
-- good morning
-- good evening
-- hey there
-
-## intent:goodbye
-- bye
-- goodbye
-- see you around
-- see you later
-
-## intent:inform
-- [Bucharest](location)
-- [Cluj](location)
-- [Iasi](location)
-- [Craiova](location)
-- [Timisoara](location)
-- [Brasov](location)
-- [Constanta](location)
-- [Ramnicu Valcea](location)
-
-## intent:search_provider
-- I am looking for a [restaurant](facility_type)
-- find me a nearby [restaurant](facility_type)
-- show me [restaurant](facility_type)
-- [restaurant](facility_type)
-- find me a nearby [restaurant](facility_type) in [Bucharest](location)
-- I need a [restaurant](facility_type)
-
 ## intent:affirm
 - yes
+- yes sure
+- absolutely
+- for sure
+- yes yes yes
+- definitely
+- yeah
+- si
+- ok
+- okay
 - indeed
 - of course
 - that sounds good
@@ -39,11 +16,297 @@
 
 ## intent:deny
 - no
+- not today
+- no thanks
+- no thank you
+- uh no
+- nope
+- do you have something else
+- no this does not work for me
 - never
 - I don't think so
 - don't like that
 - no way
 - not really
+
+## intent:out_of_scope
+- please help with my ice cream it's dripping
+- someone call the police i think the bot died
+- show me a picture of a chicken
+- neither
+- I want to visit Paris
+- i don't care
+- i do not care how are you
+- again?
+- oh wait i gave you my work email address can i change it?
+- hang on let me find it
+- stop it, i do not care!!!
+- how come?
+- I changed my mind
+- what?
+- did i break you
+- that link doesn't work!
+- you already have that
+- this is a really frustrating experience
+- no stop
+- Can I ask you questions first?
+- is it a wasteland full of broken robot parts?
+- can we keep chatting?
+- talk to me
+- who is your favourite robot?
+- can you help me to build a bot
+- are you a bot?
+- are you a human?
+- am I talking to a bot?
+- am I talking to a human?
+
+## intent:greet
+- Hi
+- Hey
+- Hi bot
+- Hey bot
+- Hello
+- good morning
+- hi again
+- hi folks
+- hi Mister
+- hi pal!
+- hi there
+- greetings
+- hello everybody
+- hello is anybody there
+- hello robot
+- hi
+- hey
+- hello
+- good evening
+- hey there
+
+## intent:goodbye
+- Bye
+- Bye!
+- Goodbye
+- Bye bot
+- See you
+- Goodbye friend
+- see you around
+- see you later
+- bye
+- bye for now
+- catch you later
+- gotta go
+- goodnight
+- have a nice day
+- I'm off
+- see you later alligator
+- we'll speak soon
+
+## intent:inform
+- [Cluj](location)
+- [Iasi](location)
+- [Craiova](location)
+- [Timisoara](location)
+- [Brasov](location)
+- [Constanta](location)
+- [Ramnicu Valcea](location)
+- [Sibiu](location)
+- [Bucharest](location)
+- [Sectorul 1](location)
+- [Sectorul 2](location)
+- [Sectorul 3](location)
+- [Sectorul 4](location)
+- [Sectorul 5](location)
+- [Sectorul 6](location)
+- [Piata Romana](location)
+- [Piata Victoriei](location)
+- [Piata Unirii](location)
+- [Regie](location)
+- [Militari](location)
+- [Drumul Taberei](location)
+- [Politehnica](location)
+- [Grozavesti](location)
+- [Crangasi](location)
+- [Parcul Regele Mihai I](location)
+- [Centrul Vechi](location)
+- [Berceni](location)
+- [Titan](location)
+- [Gradina Icoanei](location)
+- [Sitka](location)
+- [Juneau](location)
+- [Virginia](location)
+- [Cusseta](location)
+- [Chicago](location)
+- [Tucson](location)
+- [Columbus](location)
+- [Valdez](location)
+- [Preston](location)
+- [Huntsville](location)
+- [Boulder](location)
+- [California](location)
+- [Tulsa](location)
+- [Colorado](location)
+- [Goodyear](location)
+- [Albuquerque](location)
+- [Scottsdale](location)
+- [Hibbing](location)
+- [Norman](location)
+- [San](location)
+- [Peoria](location)
+- [New](location)
+- [Corpus](location)
+- [Montgomery](location)
+- [Wichita](location)
+- [Aurora](location)
+- [Denver](location)
+- [Sierra](location)
+- [Georgetown](location)
+- [Birmingham](location)
+- [Fayetteville](location)
+- [Carson](location)
+- [Raleigh](location)
+- [Bakersfield](location)
+- [Mobile](location)
+- [Detroit](location)
+- [Bunnell](location)
+- [Chattanooga](location)
+- [Mesa](location)
+- [Fernley](location)
+- [Marana](location)
+- [Yuma](location)
+- [Little](location)
+- [Athens](location)
+- [Hartsville](location)
+- [Port](location)
+- [Tampa](location)
+- [Fresno](location)
+- [Unalaska](location)
+- [Eloy](location)
+- [Salt](location)
+- [Jackson](location)
+- [Fort](location)
+- [Casa](location)
+- [Charleston](location)
+- [Henderson](location)
+- [Durham](location)
+- [Abilene](location)
+- [Palmdale](location)
+- [Babbitt](location)
+- [Surprise](location)
+- [Cape](location)
+- [Shreveport](location)
+- [Rio](location)
+- [Savannah](location)
+- [Reno](location)
+- [Orlando](location)
+- [North](location)
+- [Tallahassee](location)
+- [Amarillo](location)
+- [St](location)
+- [Knoxville](location)
+- [Sacramento](location)
+- [Clarksville](location)
+- [Los Angeles](location)
+- [New York](location)
+- [Las Vegas](location)
+- [San Diego](location)
+- [San Antonio](location)
+- [El Paso](location)
+- [Kansas location](location)
+- [San Francisco](location)
+- [Santa Barbara](location)
+- [pub](facility_type)
+- [restaurant](facility_type)
+- [cafe](facility_type)
+- a [pub](facility_type)
+- a [restaurant](facility_type)
+- a [cafe](facility_type)
+
+
+## intent:search_provider
+- i need a [restaurant](facility_type)
+- find me a nearby [restaurant](facility_type)
+- show me [restaurants](facility_type)
+- [restaurant](facility_type)
+- find me a nearby [restaurant](facility_type) my zip code is [10119](location)
+- i need a [pub](facility_type)
+- find me a nearby [pub](facility_type)
+- show me [pub](facility_type)
+- [pub](facility_type)
+- find me a nearby [pub](facility_type) my zip code is [10119](location)
+- find me a nearby [cafe](facility_type)
+- show me [cafe](facility_type)
+- [cafe](facility_type)
+- find me a nearby [cafe](facility_type) my zip code is [10119](location)
+- i need a [restaurant](facility_type) my zip code is [77494](location)
+- my zip code is [30277](location) and i need a [cafe](facility_type)
+- my zip code is [86602](location) and i need a [restaurant](facility_type)
+- my zip code is [47516](location) and i need a [pub](facility_type)
+- i need a [cafe](facility_type) at [77474](location)
+- i need a [restaurant](facility_type) at [77474](location)
+- i need a [pub](facility_type) at [77474](location)
+- i am in [Amarillo](location) and i need a [cafe](facility_type)
+- i am in [New York](location) and i need a [restaurant](facility_type)
+- i am in [Las Vegas](location) and i need a [pub](facility_type)
+- i need a [cafe](facility_type) in [Katy](location)
+- i need a [restaurant](facility_type) in [Waco](location)
+- i need a [pub](facility_type) in [Clarksville](location)
+- show me [cafe](facility_type) in [Knoxville](location)
+- show me [restaurant](facility_type) in [Durham](location)
+- show me [pub](facility_type) in [Detroit](location)
+- find me a nearby [pub](facility_type) in [Reno](location)
+- hi i am in [Tampa](location) i need a [restaurant]{"entity": "facility_type", "value": "xubh-q36u")
+- hi i am in [San Diego](location) i need a [restaurant]{"entity": "facility_type", "value": "xubh-q36u")
+- hi i am in [Nashville](location) i need a [pub]{"entity": "facility_type","value": "9wzi-peqs"}
+- hi i am in [Sacramento](location) i need a [cafe]{"entity": "facility_type", "value": "b27b-2uc7")
+- hi i am in [Springfield](location) i need a [restaurant]{"entity": "facility_type", "value": "xubh-q36u")
+- hi i am in [Atlanta](location) i need a [pub]{"entity": "facility_type","value": "9wzi-peqs"}
+- hi i am in [Chicago](location) i need a [cafe]{"entity": "facility_type", "value": "b27b-2uc7")
+- hi i am in [Santa Cruz](location) i need a [restaurant]{"entity": "facility_type", "value": "xubh-q36u")
+- hi i am in [Boston](location) i need a [pub]{"entity": "facility_type","value": "9wzi-peqs"}
+- hello i am in [Tampa](location) i need a [cafe]{"entity": "facility_type", "value": "b27b-2uc7")
+- hello i am in [San Diego](location) i need a [restaurant]{"entity": "facility_type", "value": "xubh-q36u")
+- hello i am in [Nashville](location) i need a [pub]{"entity": "facility_type","value": "9wzi-peqs"}
+- hello i am in [Sacramento](location) i need a [cafe]{"entity": "facility_type", "value": "b27b-2uc7")
+- hello i am in [Springfield](location) i need a [restaurant]{"entity": "facility_type", "value": "xubh-q36u")
+- hello i am in [Atlanta](location) i need a [pub]{"entity": "facility_type","value": "9wzi-peqs"}
+- hello i am in [Chicago](location) i need a [cafe]{"entity": "facility_type", "value": "b27b-2uc7")
+- hello i am in [Santa Cruz](location) i need a [restaurant]{"entity": "facility_type", "value": "xubh-q36u")
+- hello i am in [Boston](location) i need a [pub]{"entity": "facility_type","value": "9wzi-peqs"}
+- Good morning i am in [Tampa](location) i need a [cafe]{"entity": "facility_type", "value": "b27b-2uc7")
+- Good morning i am in [San Diego](location) i need a [restaurant]{"entity": "facility_type", "value": "xubh-q36u")
+- Good morning i am in [Nashville](location) i need a [pub]{"entity": "facility_type","value": "9wzi-peqs"}
+- Good morning i am in [Sacramento](location) i need a [cafe]{"entity": "facility_type", "value": "b27b-2uc7")
+- Good morning i am in [Springfield](location) i need a [restaurant]{"entity": "facility_type", "value": "xubh-q36u")
+- Good morning i am in [Atlanta](location) i need a [pub]{"entity": "facility_type","value": "9wzi-peqs"}
+- Good morning i am in [Chicago](location) i need a [cafe]{"entity": "facility_type", "value": "b27b-2uc7")
+- Good morning i am in [Santa Cruz](location) i need a [restaurant]{"entity": "facility_type", "value": "xubh-q36u")
+- Good morning i am in [Boston](location) i need a [pub]{"entity": "facility_type","value": "9wzi-peqs"}
+- Hello again i need a [cafe](facility_type) in [Katy](location)
+- Hello again i need a [restaurant](facility_type) in [Waco](location)
+- Hello again i need a [pub](facility_type) in [Clarksville](location)
+- Good morning i need a [cafe](facility_type) in [Katy](location)
+- Good morning i need a [restaurant](facility_type) in [Waco](location)
+- Good morning i need a [pub](facility_type) in [Clarksville](location)
+- Can you tell me a [cafe](facility_type) in [Oklahoma City](location) ?
+
+
+## intent:thanks
+- Thanks
+- Thank you
+- Thank you so much
+- Thanks bot
+- Thanks for that
+- cheers
+- cheers bro
+- ok thanks!
+- perfect thank you
+- thanks a bunch for everything
+- thanks for the help
+- thanks a lot
+- amazing, thanks
+- cool, thanks
+- cool thank you
+
 
 ## intent:mood_great
 - perfect
@@ -67,8 +330,5 @@
 - extremely sad
 - so sad
 
-## intent:bot_challenge
-- are you a bot?
-- are you a human?
-- am I talking to a bot?
-- am I talking to a human?
+## regex:location
+- [0-9]{5}
