@@ -59,6 +59,8 @@
 - are you a human?
 - am I talking to a bot?
 - am I talking to a human?
+- Neither
+- How are you?
 
 ## intent:greet
 - Hi
@@ -81,6 +83,10 @@
 - hello
 - good evening
 - hey there
+- Good morning
+- Hey there
+- Hello there
+- Hello, bot
 
 ## intent:goodbye
 - Bye
@@ -100,6 +106,8 @@
 - I'm off
 - see you later alligator
 - we'll speak soon
+- See you later alligator
+- Goodnight
 
 ## intent:inform
 - [Cluj](location)
@@ -220,7 +228,7 @@
 - a [pub](facility_type)
 - a [restaurant](facility_type)
 - a [cafe](facility_type)
-
+- [Bucuresti](location)
 
 ## intent:search_provider
 - i need a [restaurant](facility_type)
@@ -256,31 +264,31 @@
 - find me a nearby [pub](facility_type) in [Reno](location)
 - hi i am in [Tampa](location) i need a [restaurant]{"entity": "facility_type", "value": "xubh-q36u")
 - hi i am in [San Diego](location) i need a [restaurant]{"entity": "facility_type", "value": "xubh-q36u")
-- hi i am in [Nashville](location) i need a [pub]{"entity": "facility_type","value": "9wzi-peqs"}
+- hi i am in [Nashville](location) i need a [pub]{"entity": "facility_type", "value": "9wzi-peqs"}
 - hi i am in [Sacramento](location) i need a [cafe]{"entity": "facility_type", "value": "b27b-2uc7")
 - hi i am in [Springfield](location) i need a [restaurant]{"entity": "facility_type", "value": "xubh-q36u")
-- hi i am in [Atlanta](location) i need a [pub]{"entity": "facility_type","value": "9wzi-peqs"}
+- hi i am in [Atlanta](location) i need a [pub]{"entity": "facility_type", "value": "9wzi-peqs"}
 - hi i am in [Chicago](location) i need a [cafe]{"entity": "facility_type", "value": "b27b-2uc7")
 - hi i am in [Santa Cruz](location) i need a [restaurant]{"entity": "facility_type", "value": "xubh-q36u")
-- hi i am in [Boston](location) i need a [pub]{"entity": "facility_type","value": "9wzi-peqs"}
+- hi i am in [Boston](location) i need a [pub]{"entity": "facility_type", "value": "9wzi-peqs"}
 - hello i am in [Tampa](location) i need a [cafe]{"entity": "facility_type", "value": "b27b-2uc7")
 - hello i am in [San Diego](location) i need a [restaurant]{"entity": "facility_type", "value": "xubh-q36u")
-- hello i am in [Nashville](location) i need a [pub]{"entity": "facility_type","value": "9wzi-peqs"}
+- hello i am in [Nashville](location) i need a [pub]{"entity": "facility_type", "value": "9wzi-peqs"}
 - hello i am in [Sacramento](location) i need a [cafe]{"entity": "facility_type", "value": "b27b-2uc7")
 - hello i am in [Springfield](location) i need a [restaurant]{"entity": "facility_type", "value": "xubh-q36u")
-- hello i am in [Atlanta](location) i need a [pub]{"entity": "facility_type","value": "9wzi-peqs"}
+- hello i am in [Atlanta](location) i need a [pub]{"entity": "facility_type", "value": "9wzi-peqs"}
 - hello i am in [Chicago](location) i need a [cafe]{"entity": "facility_type", "value": "b27b-2uc7")
 - hello i am in [Santa Cruz](location) i need a [restaurant]{"entity": "facility_type", "value": "xubh-q36u")
-- hello i am in [Boston](location) i need a [pub]{"entity": "facility_type","value": "9wzi-peqs"}
+- hello i am in [Boston](location) i need a [pub]{"entity": "facility_type", "value": "9wzi-peqs"}
 - Good morning i am in [Tampa](location) i need a [cafe]{"entity": "facility_type", "value": "b27b-2uc7")
 - Good morning i am in [San Diego](location) i need a [restaurant]{"entity": "facility_type", "value": "xubh-q36u")
-- Good morning i am in [Nashville](location) i need a [pub]{"entity": "facility_type","value": "9wzi-peqs"}
+- Good morning i am in [Nashville](location) i need a [pub]{"entity": "facility_type", "value": "9wzi-peqs"}
 - Good morning i am in [Sacramento](location) i need a [cafe]{"entity": "facility_type", "value": "b27b-2uc7")
 - Good morning i am in [Springfield](location) i need a [restaurant]{"entity": "facility_type", "value": "xubh-q36u")
-- Good morning i am in [Atlanta](location) i need a [pub]{"entity": "facility_type","value": "9wzi-peqs"}
+- Good morning i am in [Atlanta](location) i need a [pub]{"entity": "facility_type", "value": "9wzi-peqs"}
 - Good morning i am in [Chicago](location) i need a [cafe]{"entity": "facility_type", "value": "b27b-2uc7")
 - Good morning i am in [Santa Cruz](location) i need a [restaurant]{"entity": "facility_type", "value": "xubh-q36u")
-- Good morning i am in [Boston](location) i need a [pub]{"entity": "facility_type","value": "9wzi-peqs"}
+- Good morning i am in [Boston](location) i need a [pub]{"entity": "facility_type", "value": "9wzi-peqs"}
 - Hello again i need a [cafe](facility_type) in [Katy](location)
 - Hello again i need a [restaurant](facility_type) in [Waco](location)
 - Hello again i need a [pub](facility_type) in [Clarksville](location)
@@ -288,7 +296,6 @@
 - Good morning i need a [restaurant](facility_type) in [Waco](location)
 - Good morning i need a [pub](facility_type) in [Clarksville](location)
 - Can you tell me a [cafe](facility_type) in [Oklahoma City](location) ?
-
 
 ## intent:thanks
 - Thanks
@@ -306,7 +313,7 @@
 - amazing, thanks
 - cool, thanks
 - cool thank you
-
+- Thanks a lot
 
 ## intent:mood_great
 - perfect
@@ -329,6 +336,9 @@
 - not very good
 - extremely sad
 - so sad
+
+## synonym:9wzi-peqs
+- pub
 
 ## regex:location
 - [0-9]{5}
