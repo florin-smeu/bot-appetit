@@ -87,6 +87,7 @@
 - Hey there
 - Hello there
 - Hello, bot
+- Hi there
 
 ## intent:goodbye
 - Bye
@@ -146,6 +147,7 @@
 - a [restaurant](facility_type)
 - a [cafe](facility_type)
 - [Bucuresti](location)
+- [Bistro](location)
 
 ## intent:search_provider
 - i need a [restaurant](facility_type)
@@ -161,7 +163,6 @@
 - find me a nearby [cafe](facility_type)
 - show me [cafe](facility_type)
 - [cafe](facility_type)
-
 - find me a nearby [cafe](facility_type) my zip code is [010080](location)
 - i need a [restaurant](facility_type) my zip code is [010017](location)
 - my zip code is [010069](location) and i need a [cafe](facility_type)
@@ -180,35 +181,33 @@
 - show me [restaurant](facility_type) in [Aviatiei](location)
 - show me [pub](facility_type) in [Dudesti](location)
 - find me a nearby [pub](facility_type) in [Dealul Spirii](location)
-
 - hi i am in [Regie](location) i need a [restaurant]{"entity": "facility_type", "value": "restaurant")
 - hi i am in [Berceni](location) i need a [restaurant]{"entity": "facility_type", "value": "restaurant")
-- hi i am in [Centrul Civic](location) i need a [pub]{"entity": "facility_type", "value": "pub"}
+- hi i am in [Centrul Civic](location) i need a [pub](facility_type)
 - hi i am in [Lipscani](location) i need a [cafe]{"entity": "facility_type", "value": "cafe")
 - hi i am in [Floreasca](location) i need a [restaurant]{"entity": "facility_type", "value": "restaurant")
-- hi i am in [Dorobanti](location) i need a [pub]{"entity": "facility_type", "value": "pub"}
+- hi i am in [Dorobanti](location) i need a [pub](facility_type)
 - hi i am in [Primaverii](location) i need a [cafe]{"entity": "facility_type", "value": "cafe")
 - hi i am in [Cotroceni](location) i need a [restaurant]{"entity": "facility_type", "value": "restaurant")
-- hi i am in [Tineretului](location) i need a [pub]{"entity": "facility_type", "value": "pub"}
+- hi i am in [Tineretului](location) i need a [pub](facility_type)
 - hello i am in [Rahova](location) i need a [cafe]{"entity": "facility_type", "value": "cafe")
 - hello i am in [Centrul Vechi](location) i need a [restaurant]{"entity": "facility_type", "value": "restaurant")
-- hello i am in [Unirii](location) i need a [pub]{"entity": "facility_type", "value": "pub"}
+- hello i am in [Unirii](location) i need a [pub](facility_type)
 - hello i am in [Dristor](location) i need a [cafe]{"entity": "facility_type", "value": "cafe")
 - hello i am in [Titan](location) i need a [restaurant]{"entity": "facility_type", "value": "restaurant")
-- hello i am in [Cismigiu](location) i need a [pub]{"entity": "facility_type", "value": "pub"}
+- hello i am in [Cismigiu](location) i need a [pub](facility_type)
 - hello i am in [Domenii](location) i need a [cafe]{"entity": "facility_type", "value": "cafe")
 - hello i am in [Drumul Taberei](location) i need a [restaurant]{"entity": "facility_type", "value": "restaurant")
-- hello i am in [Gara de Nord](location) i need a [pub]{"entity": "facility_type", "value": "pub"}
+- hello i am in [Gara de Nord](location) i need a [pub](facility_type)
 - Good morning i am in [Ghencea](location) i need a [cafe]{"entity": "facility_type", "value": "cafe")
 - Good morning i am in [Giulesti](location) i need a [restaurant]{"entity": "facility_type", "value": "restaurant")
-- Good morning i am in [Grivita](location) i need a [pub]{"entity": "facility_type", "value": "pub"}
+- Good morning i am in [Grivita](location) i need a [pub](facility_type)
 - Good morning i am in [Obor](location) i need a [cafe]{"entity": "facility_type", "value": "cafe")
 - Good morning i am in [Militari](location) i need a [restaurant]{"entity": "facility_type", "value": "restaurant")
-- Good morning i am in [Mihai Bravu](location) i need a [pub]{"entity": "facility_type", "value": "pub"}
+- Good morning i am in [Mihai Bravu](location) i need a [pub](facility_type)
 - Good morning i am in [Colentina](location) i need a [cafe]{"entity": "facility_type", "value": "cafe")
 - Good morning i am in [Bucurestii Noi](location) i need a [restaurant]{"entity": "facility_type", "value": "restaurant")
-- Good morning i am in [Baneasa](location) i need a [pub]{"entity": "facility_type", "value": "pub"}
-
+- Good morning i am in [Baneasa](location) i need a [pub](facility_type)
 - Hello again i need a [cafe](facility_type) in [Piata Romana](location)
 - Hello again i need a [restaurant](facility_type) in [Stefan Cel Mare](location)
 - Hello again i need a [pub](facility_type) in [Piata Victoriei](location)
@@ -216,6 +215,9 @@
 - Good morning i need a [restaurant](facility_type) in [Herastrau](location)
 - Good morning i need a [pub](facility_type) in [Aviatorilor](location)
 - Can you tell me a [cafe](facility_type) in [13 Septembrie](location) ?
+- I am in [Sectorul 1](location)
+- Hey, I need a [restaurant](facility_type) in [Aviatorilor](location)
+- How about a bistro?
 
 ## intent:thanks
 - Thanks

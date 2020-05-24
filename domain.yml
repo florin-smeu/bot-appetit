@@ -1,34 +1,51 @@
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true
 intents:
-  - greet
-  - goodbye
-  - affirm
-  - deny
-  - mood_great
-  - mood_unhappy
-  - bot_challenge
-  - inform
-  - search_provider
-  - thanks
-  - out_of_scope
-
+- greet
+- goodbye
+- affirm
+- deny
+- mood_great
+- mood_unhappy
+- inform
+- search_provider
+- thanks
+- out_of_scope
 entities:
-  - location
-  - facility_type
-  - facility_name
-
+- location
+- facility_type
+- facility_name
 slots:
-  location:
-    type: unfeaturized
-  facility_type:
-    type: unfeaturized
   facility_address:
     type: unfeaturized
   facility_name:
     type: unfeaturized
-
-forms:
-  - facility_form
-
+  facility_type:
+    type: unfeaturized
+  location:
+    type: unfeaturized
+responses:
+  utter_greet:
+  - text: Hi. What are you looking for?
+  - text: 'Hey there! Please choose one of the eating facility options:'
+  - text: Hello! What can I help you with today?
+  utter_goodbye:
+  - text: Talk to you later!
+  - text: Have a good day.
+  - text: Until next time!
+  utter_noworries:
+  - text: My pleasure.
+  - text: You are welcome!
+  utter_ask_facility_type:
+  - text: 'Choose one of the following to search for: restaurant, pub, or home cafe.'
+  utter_ask_location:
+  - text: Please provide your city name.
+  - text: What is your current city?
+  - text: Please provide your city name or zip code.
+  - text: Please enter your zip code or city name to find local providers.
+  utter_address:
+  - text: The address is {facility_address}.
 actions:
 - utter_noworries
 - utter_greet
@@ -38,34 +55,5 @@ actions:
 - find_facility_types
 - find_eating_address
 - utter_address
-
-responses:
-  utter_greet:
-    - text: "Hi. What are you looking for?"
-    - text: "Hey there! Please choose one of the eating facility options:"
-    - text: "Hello! What can I help you with today?"
-
-  utter_goodbye:
-  - text: "Talk to you later!"
-  - text: "Have a good day."
-  - text: "Until next time!"
-
-  utter_noworries:
-  - text: "My pleasure."
-  - text: "You are welcome!"
-
-  utter_ask_facility_type:
-  - text: "Choose one of the following to search for: restaurant, pub, or home cafe."
-
-  utter_ask_location:
-  - text: "Please provide your city name."
-  - text: "What is your current city?"
-  - text: "Please provide your city name or zip code."
-  - text: "Please enter your zip code or city name to find local providers."
-
-  utter_address:
-  - text: "The address is {facility_address}."
-
-session_config:
-  session_expiration_time: 60
-  carry_over_slots_to_new_session: true
+forms:
+- facility_form
