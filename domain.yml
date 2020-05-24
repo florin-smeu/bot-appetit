@@ -14,7 +14,7 @@ intents:
 entities:
   - location
   - facility_type
-  - facility_id
+  - facility_name
 
 slots:
   location:
@@ -23,7 +23,7 @@ slots:
     type: unfeaturized
   facility_address:
     type: unfeaturized
-  facility_id:
+  facility_name:
     type: unfeaturized
 
 forms:

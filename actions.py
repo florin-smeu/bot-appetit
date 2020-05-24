@@ -15,75 +15,49 @@ from rasa_sdk.forms import FormAction
 # b27b-2uc7 is for restaurants
 # 9wzi-peqs is for home cafes
 
+
+API_KEY = 'AIzaSyAu-uc1As4xBhfge4l_9Aj4qZ-Vh6IJYWg'
+
 ENDPOINTS = {
-    "base": "https://data.medicare.gov/resource/{}.json",
-    "xubh-q36u": {
-        "city_query": "?city={}",
-        "zip_code_query": "?zip_code={}",
-        "id_query": "?provider_id={}"
-    },
-    "b27b-2uc7": {
-        "city_query": "?provider_city={}",
-        "zip_code_query": "?provider_zip_code={}",
-        "id_query": "?federal_provider_number={}"
-    },
-    "9wzi-peqs": {
-        "city_query": "?city={}",
-        "zip_code_query": "?zip={}",
-        "id_query": "?provider_number={}"
-    }
+    "base": "https://maps.googleapis.com/maps/api/place/textsearch/json?",
+    "query": "query={}",
+    "key": "&key={}"
 }
 
 FACILITY_TYPES = {
-    "restaurant":
-        {
-            "name": "restaurant",
-            "resource": "xubh-q36u"
-        },
-    "pub":
-        {
-            "name": "pub",
-            "resource": "b27b-2uc7"
-        },
-    "cafe":
-        {
-            "name": "cafe",
-            "resource": "9wzi-peqs"
-        }
+    "restaurant": {
+        "name": "restaurant"
+    },
+    "pub": {
+        "name": "pub"
+    },
+    "bistro": {
+        "name": "bistro"
+    },
+    "cafe": {
+        "name": "cafe"
+    }
 }
 
-
-def _create_path(base: Text, resource: Text,
-                 query: Text, values: Text) -> Text:
+def _create_path(query: Text) -> Text:
     """Creates a path to find provider using the endpoints."""
+    return ENDPOINTS["base"] + ENDPOINTS["query"].format(query) + ENDPOINTS["key"].format(API_KEY)
 
-    if isinstance(values, list):
-        return (base + query).format(
-            resource, ', '.join('"{0}"'.format(w) for w in values))
-    else:
-        return (base + query).format(resource, values)
-
-
-def _find_facilities(location: Text, resource: Text) -> List[Dict]:
+def _find_facilities(location: Text, facility_type: Text) -> List[Dict]:
     """Returns json of facilities matching the search criteria."""
 
-    if str.isdigit(location):
-        full_path = _create_path(ENDPOINTS["base"], resource,
-                                 ENDPOINTS[resource]["zip_code_query"],
-                                 location)
-    else:
-        full_path = _create_path(ENDPOINTS["base"], resource,
-                                 ENDPOINTS[resource]["city_query"],
-                                 location.upper())
-    #print("Full path:")
-    #print(full_path)
+    full_path = _create_path(facility_type + " " + location)
+
+    print("Full path:")
+    print(full_path)
+
     results = requests.get(full_path).json()
-    return results
+    return results['results']
 
 
-def _resolve_name(facility_types, resource) ->Text:
+def _resolve_name(facility_types, resource) -> Text:
     for key, value in facility_types.items():
-        if value.get("resource") == resource:
+        if value.get("name") == resource:
             return value.get("name")
     return ""
 
@@ -106,14 +80,14 @@ class FindFacilityTypes(Action):
         for t in FACILITY_TYPES:
             facility_type = FACILITY_TYPES[t]
             payload = "/inform{\"facility_type\": \"" + facility_type.get(
-                "resource") + "\"}"
+                "name") + "\"}"
 
             buttons.append(
                 {"title": "{}".format(facility_type.get("name").title()),
                  "payload": payload})
 
         # TODO: update rasa core version for configurable `button_type`
-        dispatcher.utter_message(template="utter_greet", buttons=buttons) #, tracker)
+        dispatcher.utter_message(template="utter_greet", buttons=buttons)
         return []
 
 
@@ -132,28 +106,16 @@ class FindEatingAddress(Action):
             domain: Dict[Text, Any]) -> List[Dict]:
 
         facility_type = tracker.get_slot("facility_type")
-        eating_id = tracker.get_slot("facility_id")
-        full_path = _create_path(ENDPOINTS["base"], facility_type,
-                                 ENDPOINTS[facility_type]["id_query"],
-                                 eating_id)
+        facility_name = tracker.get_slot("facility_name")
+
+        full_path = _create_path(facility_type + " " + facility_name)
+        print(full_path)
         results = requests.get(full_path).json()
+        results = results["results"]
         if results:
+            print(results)
             selected = results[0]
-            if facility_type == FACILITY_TYPES["restaurant"]["resource"]:
-                address = "{}, {}, {} {}".format(selected["address"].title(),
-                                                 selected["city"].title(),
-                                                 selected["state"].upper(),
-                                                 selected["zip_code"].title())
-            elif facility_type == FACILITY_TYPES["pub"]["resource"]:
-                address = "{}, {}, {} {}".format(selected["provider_address"].title(),
-                                                 selected["provider_city"].title(),
-                                                 selected["provider_state"].upper(),
-                                                 selected["provider_zip_code"].title())
-            else:
-                address = "{}, {}, {} {}".format(selected["address"].title(),
-                                                 selected["city"].title(),
-                                                 selected["state"].upper(),
-                                                 selected["zip"].title())
+            address = selected["formatted_address"]
 
             return [SlotSet("facility_address", address)]
         else:
@@ -208,29 +170,23 @@ class FacilityForm(FormAction):
             return []
 
         buttons = []
+
+        """ TODO REFACTOR"""
         # limit number of results to 3 for clear presentation purposes
         for r in results[:3]:
-            if facility_type == FACILITY_TYPES["restaurant"]["resource"]:
-                facility_id = r.get("provider_id")
-                name = r["restaurant_name"]
-            elif facility_type == FACILITY_TYPES["pub"]["resource"]:
-                facility_id = r["federal_provider_number"]
-                name = r["provider_name"]
-            else:
-                facility_id = r["provider_number"]
-                name = r["provider_name"]
+            name = r["name"]
+            location = r["formatted_address"]
 
-            payload = "/inform{\"facility_id\":\"" + facility_id + "\"}"
+            payload = "/inform{\"facility_name\":\"" + name + "\"}"
             buttons.append(
-                {"title": "{}".format(name.title()), "payload": payload})
+                {"title": "{}".format(name), "payload": payload})
 
         if len(buttons) == 1:
             message = "Here is a {} near you:".format(button_name)
         else:
-            if button_name == "cafe":
-                button_name = "cafe"
             message = "Here are {} {}s near you:".format(len(buttons),
                                                          button_name)
+
 
         # TODO: update rasa core version for configurable `button_type`
         dispatcher.utter_button_message(message, buttons)
