@@ -218,6 +218,10 @@
 - I am in [Sectorul 1](location)
 - Hey, I need a [restaurant](facility_type) in [Aviatorilor](location)
 - How about a bistro?
+- I need a [pub]{"entity": "facility_type", "value": "9wzi-peqs"} in [Centrul Vechi](location)
+- Now I am looking for a [cafe](facility_type) in [Berceni](location)
+- I need a [restaurant](facility_type) at [Piata Victoriei](location)
+- I need a [restaurant](facility_type) in [Bucharest](location)
 
 ## intent:thanks
 - Thanks
