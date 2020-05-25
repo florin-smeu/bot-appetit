@@ -86,9 +86,110 @@ class FindFacilityTypes(Action):
                 {"title": "{}".format(facility_type.get("name").title()),
                  "payload": payload})
 
-        # TODO: update rasa core version for configurable `button_type`
-        # TODO Refactor to print also messages
-        dispatcher.utter_message(template="utter_greet", buttons=buttons)
+        restaurant_url = "https://en.wikipedia.org/wiki/Restaurant#/media/File:Inside_Le_Procope.jpg"
+        cafe_url = "https://en.wikipedia.org/wiki/Coffeehouse#/media/File:Caf%C3%A9_M%C3%A9lange,_Wien.jpg"
+        pub_url = "https://en.wikipedia.org/wiki/Pub#/media/File:Pub_grub.jpg"
+        bistro_url = "https://fr.wikipedia.org/wiki/Bistro#/media/Fichier:Int%C3%A9rieur_du_Bistrot_de_pays_de_Vinsobres.jpg"
+        gt = {
+            "attachment": {
+                "type": "template",
+                "payload": {
+                    "template_type": "generic",
+                    "elements": [
+                        {
+                            "title": "Restaurant",
+                            "image_url": restaurant_url,
+                            "subtitle": "Food establishment",
+                            "default_action": {
+                                "type": "web_url",
+                                "url": "https://tithal.life",
+                                "webview_height_ratio": "tall",
+                            },
+                            "buttons": [
+                                {
+                                    "type": "web_url",
+                                    "url": "https://tithal.life",
+                                    "title": "View Website"
+                                },
+                                {
+                                    "type": "postback",
+                                    "title": "Choose",
+                                    "payload": "DEVELOPER_DEFINED_PAYLOAD"
+                                }
+                            ]
+                        },
+                        {
+                            "title": "Cafe",
+                            "image_url": cafe_url,
+                            "subtitle": "Food establishment",
+                            "default_action": {
+                                "type": "web_url",
+                                "url": "https://tithal.life",
+                                "webview_height_ratio": "tall",
+                            },
+                            "buttons": [
+                                {
+                                    "type": "web_url",
+                                    "url": "https://tithal.life",
+                                    "title": "View Website"
+                                },
+                                {
+                                    "type": "postback",
+                                    "title": "Choose",
+                                    "payload": "DEVELOPER_DEFINED_PAYLOAD"
+                                }
+                            ]
+                        },
+                        {
+                            "title": "Pub",
+                            "image_url": pub_url,
+                            "subtitle": "Food establishment",
+                            "default_action": {
+                                "type": "web_url",
+                                "url": "https://tithal.life",
+                                "webview_height_ratio": "tall",
+                            },
+                            "buttons": [
+                                {
+                                    "type": "web_url",
+                                    "url": "https://tithal.life",
+                                    "title": "View Website"
+                                },
+                                {
+                                    "type": "postback",
+                                    "title": "Choose",
+                                    "payload": "DEVELOPER_DEFINED_PAYLOAD"
+                                }
+                            ]
+                        },
+                        {
+                            "title": "Bistro",
+                            "image_url": bistro_url,
+                            "subtitle": "Food establishment",
+                            "default_action": {
+                                "type": "web_url",
+                                "url": "https://tithal.life",
+                                "webview_height_ratio": "tall",
+                            },
+                            "buttons": [
+                                {
+                                    "type": "web_url",
+                                    "url": "https://tithal.life",
+                                    "title": "View Website"
+                                },
+                                {
+                                    "type": "postback",
+                                    "title": "Choose",
+                                    "payload": "DEVELOPER_DEFINED_PAYLOAD"
+                                }
+                            ]
+                        },
+
+                    ]
+                }
+            }
+        }
+        dispatcher.utter_custom_json(gt)
         return []
 
 
