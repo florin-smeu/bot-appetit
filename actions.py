@@ -28,11 +28,8 @@ FACILITY_TYPES = {
     "restaurant": {
         "name": "restaurant"
     },
-    "pub": {
-        "name": "pub"
-    },
-    "bistro": {
-        "name": "bistro"
+    "bar": {
+        "name": "bar"
     },
     "cafe": {
         "name": "cafe"
@@ -86,165 +83,9 @@ class FindFacilityTypes(Action):
                 {"title": "{}".format(facility_type.get("name").title()),
                  "payload": payload})
 
-        restaurant_url = "https://en.wikipedia.org/wiki/Restaurant#/media/File:Inside_Le_Procope.jpg"
-        cafe_url = "https://en.wikipedia.org/wiki/Coffeehouse#/media/File:Caf%C3%A9_M%C3%A9lange,_Wien.jpg"
-        pub_url = "https://en.wikipedia.org/wiki/Pub#/media/File:Pub_grub.jpg"
-        bistro_url = "https://fr.wikipedia.org/wiki/Bistro#/media/Fichier:Int%C3%A9rieur_du_Bistrot_de_pays_de_Vinsobres.jpg"
-        gt = {
-            "attachment": {
-                "type": "template",
-                "payload": {
-                    "template_type": "generic",
-                    "elements": [
-                        {
-                            "title": "Restaurant",
-                            "image_url": restaurant_url,
-                            "subtitle": "Food establishment",
-                            "default_action": {
-                                "type": "web_url",
-                                "url": "https://tithal.life",
-                                "webview_height_ratio": "tall",
-                            },
-                            "buttons": [
-                                {
-                                    "type": "web_url",
-                                    "url": "https://tithal.life",
-                                    "title": "View Website"
-                                },
-                                {
-                                    "type": "postback",
-                                    "title": "Choose",
-                                    "payload": "DEVELOPER_DEFINED_PAYLOAD"
-                                }
-                            ]
-                        },
-                        {
-                            "title": "Cafe",
-                            "image_url": cafe_url,
-                            "subtitle": "Food establishment",
-                            "default_action": {
-                                "type": "web_url",
-                                "url": "https://tithal.life",
-                                "webview_height_ratio": "tall",
-                            },
-                            "buttons": [
-                                {
-                                    "type": "web_url",
-                                    "url": "https://tithal.life",
-                                    "title": "View Website"
-                                },
-                                {
-                                    "type": "postback",
-                                    "title": "Choose",
-                                    "payload": "DEVELOPER_DEFINED_PAYLOAD"
-                                }
-                            ]
-                        },
-                        {
-                            "title": "Pub",
-                            "image_url": pub_url,
-                            "subtitle": "Food establishment",
-                            "default_action": {
-                                "type": "web_url",
-                                "url": "https://tithal.life",
-                                "webview_height_ratio": "tall",
-                            },
-                            "buttons": [
-                                {
-                                    "type": "web_url",
-                                    "url": "https://tithal.life",
-                                    "title": "View Website"
-                                },
-                                {
-                                    "type": "postback",
-                                    "title": "Choose",
-                                    "payload": "DEVELOPER_DEFINED_PAYLOAD"
-                                }
-                            ]
-                        },
-                        {
-                            "title": "Bistro",
-                            "image_url": bistro_url,
-                            "subtitle": "Food establishment",
-                            "default_action": {
-                                "type": "web_url",
-                                "url": "https://tithal.life",
-                                "webview_height_ratio": "tall",
-                            },
-                            "buttons": [
-                                {
-                                    "type": "web_url",
-                                    "url": "https://tithal.life",
-                                    "title": "View Website"
-                                },
-                                {
-                                    "type": "postback",
-                                    "title": "Choose",
-                                    "payload": "DEVELOPER_DEFINED_PAYLOAD"
-                                }
-                            ]
-                        },
-
-                    ]
-                }
-            }
-        }
-        dispatcher.utter_custom_json(gt)
+        dispatcher.utter_message(template="utter_greet", buttons=buttons)
         return []
 
-
-class AddressForm(FormAction):
-    """This form class retrieves the address of the user's
-    eating facility choice to display it to the user."""
-
-    def name(self) -> Text:
-        """Unique identifier of the form"""
-
-        return "address_form"
-
-    @staticmethod
-    def required_slots(tracker: Tracker) -> List[Text]:
-            """A list of required slots that the form has to fill"""
-
-            return ["facility_type", "facility_name"]
-
-    def slot_mappings(self) -> Dict[Text, Any]:
-        return {"facility_type": self.from_entity(entity="facility_type",
-                                                  intent=["inform",
-                                                          "search_provider"]),
-                "facility_name": self.from_entity(entity="facility_name",
-                                             intent=["inform",
-                                                     "search_provider"])}
-
-    def submit(self,
-               dispatcher: CollectingDispatcher,
-               tracker: Tracker,
-               domain: Dict[Text, Any]
-               ) -> List[Dict]:
-
-        facility_type = tracker.get_slot("facility_type")
-        facility_name = tracker.get_slot("facility_name")
-
-        full_path = _create_path(facility_type + " " + facility_name)
-        print(full_path)
-        results = requests.get(full_path).json()
-        results = results["results"]
-        if results:
-            print(results)
-            selected = results[0]
-            address = selected["formatted_address"]
-
-            dispatcher.utter_message("The address of {} is {}".format(facility_name, address))
-            return []
-        else:
-            print("No address found. Most likely this action was executed "
-                  "before the user choose a eating facility from the "
-                  "provided list. "
-                  "If this is a common problem in your dialogue flow,"
-                  "using a form instead for this action might be appropriate.")
-
-            dispatcher.utter_message("Sorry I couldn't find the address for {}".format(facility_name))
-            return []
 
 class FacilityForm(FormAction):
     """Custom form action to fill all slots required to find specific type
@@ -274,7 +115,24 @@ class FacilityForm(FormAction):
                tracker: Tracker,
                domain: Dict[Text, Any]
                ) -> List[Dict]:
-        """Once required slots are filled, print buttons for found facilities"""
+        """Once required slots are filled, print a message"""
+
+        location = tracker.get_slot('location')
+        facility_type = tracker.get_slot('facility_type')
+
+        message = "I am now searching for {}s in {}".format(facility_type, location)
+        dispatcher.utter_message(message)
+        return []
+
+class FacilityAction(Action):
+
+    def name(self) -> Text:
+        return "facility_action"
+
+    def run(self,
+            dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List:
 
         location = tracker.get_slot('location')
         facility_type = tracker.get_slot('facility_type')
@@ -307,5 +165,75 @@ class FacilityForm(FormAction):
 
         # TODO: update rasa core version for configurable `button_type`
         dispatcher.utter_button_message(message, buttons)
-
         return []
+
+
+class DetailsForm(FormAction):
+    """This form class retrieves the address of the user's
+    eating facility choice to display it to the user."""
+
+    def name(self) -> Text:
+        """Unique identifier of the form"""
+
+        return "details_form"
+
+    @staticmethod
+    def required_slots(tracker: Tracker) -> List[Text]:
+            """A list of required slots that the form has to fill"""
+
+            return ["facility_type", "facility_name"]
+
+    def slot_mappings(self) -> Dict[Text, Any]:
+        return {"facility_type": self.from_entity(entity="facility_type",
+                                                  intent=["inform",
+                                                          "search_provider"]),
+                "facility_name": self.from_entity(entity="facility_name",
+                                             intent=["inform",
+                                                     "search_provider"])}
+
+    def submit(self,
+               dispatcher: CollectingDispatcher,
+               tracker: Tracker,
+               domain: Dict[Text, Any]
+               ) -> List[Dict]:
+
+        facility_type = tracker.get_slot("facility_type")
+        facility_name = tracker.get_slot("facility_name")
+
+        message = "I am now searching for details for the {} {}".format(facility_name, facility_type)
+        dispatcher.utter_message(message)
+        return []
+
+class DetailsAction(Action):
+    def name(self) -> Text:
+        return "details_action"
+
+
+    def run(self,
+            dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List:
+
+        facility_type = tracker.get_slot("facility_type")
+        facility_name = tracker.get_slot("facility_name")
+
+        full_path = _create_path(facility_type + " " + facility_name)
+        print(full_path)
+        results = requests.get(full_path).json()
+        results = results["results"]
+        if results:
+            print(results)
+            selected = results[0]
+            address = selected["formatted_address"]
+
+            #dispatcher.utter_message("The address of {} is {}".format(facility_name, address))
+            return [SlotSet("facility_address", address)]
+        else:
+            print("No address found. Most likely this action was executed "
+                  "before the user choose a eating facility from the "
+                  "provided list. "
+                  "If this is a common problem in your dialogue flow,"
+                  "using a form instead for this action might be appropriate.")
+
+            #dispatcher.utter_message("Sorry I couldn't find the address for {}".format(facility_name))
+            return [SlotSet("facility_address", "No address")]

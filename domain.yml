@@ -38,7 +38,7 @@ responses:
   - text: My pleasure.
   - text: You are welcome!
   utter_ask_facility_type:
-  - text: 'Choose one of the following to search for: restaurant, pub, or home cafe.'
+  - text: 'Choose one of the following to search for: restaurant, bar, or home cafe.'
   utter_ask_location:
   - text: Great choice! Where should I search for {facility_type}s?
   - text: Could you tell me where whe {facility_type} should be located?
@@ -58,7 +58,9 @@ actions:
 - utter_ask_facility_name
 - utter_ask_facility_type
 - find_facility_types
+- facility_action
+- details_action
 - utter_address
 forms:
 - facility_form
-- address_form
+- details_form

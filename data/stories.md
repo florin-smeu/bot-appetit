@@ -5,10 +5,13 @@
     - facility_form
     - form{"name": "facility_form"}
     - form{"name": null}
+    - facility_action
 * inform{"facility_name": "Trattoria 20"}
-    - address_form
-    - form{"name": "address_form"}
+    - details_form
+    - form{"name": "details_form"}
     - form{"name": null}
+    - details_action
+    - utter_address
 * thanks
     - utter_noworries
 * goodbye
@@ -22,28 +25,36 @@
     - facility_form
     - form{"name": "facility_form"}
     - form{"name": null}
+    - facility_action
 * inform{"facility_name": "Trattoria 20"}
-    - address_form
-    - form{"name": "address_form"}
+    - details_form
+    - form{"name": "details_form"}
     - form{"name": null}
+    - details_action
+    - utter_address
 * search_provider{"facility_type": "restaurant"}
     - facility_form
     - form{"name": "facility_form"}
     - form{"name": null}
+    - facility_action
 * inform{"facility_name": "Trattoria 20"}   
-    - address_form
-    - form{"name": "address_form"}
+    - details_form
+    - form{"name": "details_form"}
     - form{"name": null}
-
+    - details_action
+    - utter_address
 ## happy_path2
 * search_provider{"location": "Austin", "facility_type": "restaurant"}
     - facility_form
     - form{"name": "facility_form"}
     - form{"name": null}
+    - facility_action
 * inform{"facility_name": "Trattoria 20"}
-    - address_form
-    - form{"name": "address_form"}
+    - details_form
+    - form{"name": "details_form"}
     - form{"name": null}
+    - details_action
+    - utter_address
 * thanks
     - utter_noworries
 * goodbye
