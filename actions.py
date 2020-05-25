@@ -133,7 +133,7 @@ class AddressForm(FormAction):
             selected = results[0]
             address = selected["formatted_address"]
 
-            SlotSet("facility_address", address)
+            dispatcher.utter_message("The address of {} is {}".format(facility_name, address))
             return []
         else:
             print("No address found. Most likely this action was executed "
@@ -142,7 +142,7 @@ class AddressForm(FormAction):
                   "If this is a common problem in your dialogue flow,"
                   "using a form instead for this action might be appropriate.")
 
-            SlotSet("facility_address", "not found")
+            dispatcher.utter_message("Sorry I couldn't find the address for {}".format(facility_name))
             return []
 
 class FacilityForm(FormAction):
