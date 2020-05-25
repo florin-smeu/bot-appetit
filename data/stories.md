@@ -6,7 +6,9 @@
     - form{"name": "facility_form"}
     - form{"name": null}
 * inform{"facility_name": "Trattoria 20"}
-    - find_eating_address
+    - address_form
+    - form{"name": "address_form"}
+    - form{"name": null}
     - utter_address
 * thanks
     - utter_noworries
@@ -22,14 +24,18 @@
     - form{"name": "facility_form"}
     - form{"name": null}
 * inform{"facility_name": "Trattoria 20"}
-    - find_eating_address
+    - address_form
+    - form{"name": "address_form"}
+    - form{"name": null}
     - utter_address
 * search_provider{"facility_type": "restaurant"}
     - facility_form
     - form{"name": "facility_form"}
     - form{"name": null}
 * inform{"facility_name": "Trattoria 20"}   
-    - find_eating_address
+    - address_form
+    - form{"name": "address_form"}
+    - form{"name": null}
     - utter_address
 
 ## happy_path2
@@ -38,7 +44,9 @@
     - form{"name": "facility_form"}
     - form{"name": null}
 * inform{"facility_name": "Trattoria 20"}
-    - find_eating_address
+    - address_form
+    - form{"name": "address_form"}
+    - form{"name": null}
     - utter_address
 * thanks
     - utter_noworries

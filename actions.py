@@ -87,23 +87,39 @@ class FindFacilityTypes(Action):
                  "payload": payload})
 
         # TODO: update rasa core version for configurable `button_type`
+        # TODO Refactor to print also messages
         dispatcher.utter_message(template="utter_greet", buttons=buttons)
         return []
 
 
-class FindEatingAddress(Action):
-    """This action class retrieves the address of the user's
+class AddressForm(FormAction):
+    """This form class retrieves the address of the user's
     eating facility choice to display it to the user."""
 
     def name(self) -> Text:
-        """Unique identifier of the action"""
+        """Unique identifier of the form"""
 
-        return "find_eating_address"
+        return "address_form"
 
-    def run(self,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict]:
+    @staticmethod
+    def required_slots(tracker: Tracker) -> List[Text]:
+            """A list of required slots that the form has to fill"""
+
+            return ["facility_type", "facility_name"]
+
+    def slot_mappings(self) -> Dict[Text, Any]:
+        return {"facility_type": self.from_entity(entity="facility_type",
+                                                  intent=["inform",
+                                                          "search_provider"]),
+                "facility_name": self.from_entity(entity="facility_name",
+                                             intent=["inform",
+                                                     "search_provider"])}
+
+    def submit(self,
+               dispatcher: CollectingDispatcher,
+               tracker: Tracker,
+               domain: Dict[Text, Any]
+               ) -> List[Dict]:
 
         facility_type = tracker.get_slot("facility_type")
         facility_name = tracker.get_slot("facility_name")
@@ -117,7 +133,8 @@ class FindEatingAddress(Action):
             selected = results[0]
             address = selected["formatted_address"]
 
-            return [SlotSet("facility_address", address)]
+            SlotSet("facility_address", address)
+            return []
         else:
             print("No address found. Most likely this action was executed "
                   "before the user choose a eating facility from the "
@@ -125,8 +142,8 @@ class FindEatingAddress(Action):
                   "If this is a common problem in your dialogue flow,"
                   "using a form instead for this action might be appropriate.")
 
-            return [SlotSet("facility_address", "not found")]
-
+            SlotSet("facility_address", "not found")
+            return []
 
 class FacilityForm(FormAction):
     """Custom form action to fill all slots required to find specific type
@@ -171,11 +188,10 @@ class FacilityForm(FormAction):
 
         buttons = []
 
-        """ TODO REFACTOR"""
         # limit number of results to 3 for clear presentation purposes
         for r in results[:3]:
             name = r["name"]
-            location = r["formatted_address"]
+            facility_address = r["formatted_address"]
 
             payload = "/inform{\"facility_name\":\"" + name + "\"}"
             buttons.append(
