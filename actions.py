@@ -178,13 +178,16 @@ class DetailsForm(FormAction):
     def required_slots(tracker: Tracker) -> List[Text]:
             """A list of required slots that the form has to fill"""
 
-            return ["facility_type", "facility_name"]
+            return ["facility_type", "facility_name", "location"]
 
     def slot_mappings(self) -> Dict[Text, Any]:
         return {"facility_type": self.from_entity(entity="facility_type",
                                                   intent=["inform",
                                                           "search_provider"]),
                 "facility_name": self.from_entity(entity="facility_name",
+                                                  intent=["inform",
+                                                          "search_provider"]),
+                "location": self.from_entity(entity="location",
                                              intent=["inform",
                                                      "search_provider"])}
 
@@ -196,6 +199,7 @@ class DetailsForm(FormAction):
 
         facility_type = tracker.get_slot("facility_type")
         facility_name = tracker.get_slot("facility_name")
+        location = tracker.get_slot("location")
 
         message = "I am now searching for details for the {} {}".format(facility_name, facility_type)
         dispatcher.utter_message(message)

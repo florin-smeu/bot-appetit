@@ -1,21 +1,60 @@
-session_config:
-  session_expiration_time: 60
-  carry_over_slots_to_new_session: true
+actions:
+- details_action
+- facility_action
+- find_facility_types
+- utter_address
+- utter_ask_facility_name
+- utter_ask_facility_type
+- utter_ask_location
+- utter_goodbye
+- utter_greet
+- utter_noworries
+entities:
+- facility_name
+- facility_type
+- location
+forms:
+- details_form
+- facility_form
 intents:
+- search_provider
+- inform
 - greet
 - goodbye
 - affirm
 - deny
 - mood_great
 - mood_unhappy
-- inform
-- search_provider
 - thanks
 - out_of_scope
-entities:
-- location
-- facility_type
-- facility_name
+responses:
+  utter_address:
+  - text: The address of {facility_name} is {facility_address}.
+  utter_ask_facility_name:
+  - text: Which {facility_type} would you like?
+  - text: Oops! I still need the {facility_type} name to find its address.
+  utter_ask_facility_type:
+  - text: Should I search for a restaurant, bar or a cafe?
+  utter_ask_location:
+  - text: Great choice! Where should I search for {facility_type}s?
+  - text: Could you tell me where whe {facility_type} should be located?
+  - text: Please provide your city name, area or zip code to help me search for {facility_type}s.
+  - text: Please enter your area or city name in order to find local providers.
+  - text: One more thing. Where would you like to search for {facility_type}s?
+  utter_goodbye:
+  - text: Talk to you later! :)
+  - text: Have a good day! :D
+  - text: Until next time! :D
+  utter_greet:
+  - text: Hi! :D What are you looking for?
+  - text: Hey there! :D Please choose one of the following options
+  - text: Hello! :D What can I help you with today?
+  utter_noworries:
+  - text: My pleasure!
+  - text: You are welcome!
+session_config:
+  carry_over_slots_to_new_session: true
+  session_expiration_time: 60
 slots:
   facility_address:
     type: unfeaturized
@@ -25,43 +64,5 @@ slots:
     type: unfeaturized
   location:
     type: unfeaturized
-
-responses:
-  utter_greet:
-  - text: Hi. What are you looking for?
-  - text: 'Hey there! Please choose one of the eating facility options:'
-  - text: Hello! What can I help you with today?
-  utter_goodbye:
-  - text: Talk to you later!
-  - text: Have a good day.
-  - text: Until next time!
-  utter_noworries:
-  - text: My pleasure.
-  - text: You are welcome!
-  utter_ask_facility_type:
-  - text: 'Choose one of the following to search for: restaurant, bar, or home cafe.'
-  utter_ask_location:
-  - text: Great choice! Where should I search for {facility_type}s?
-  - text: Could you tell me where whe {facility_type} should be located?
-  - text: Please provide your city name, area or zip code to help me search for {facility_type}s.
-  - text: Please enter your zip code, city name or the area in order to find local providers.
-  - text: One more thing. Where would you like to search for {facility_type}s?
-  utter_ask_facility_name:
-  - text: Which {facility_type} would you like?
-  - text: Oops! I still need the {facility_type} name to find its address.
-  utter_address:
-  - text: The address of {facility_name} is {facility_address}.
-actions:
-- utter_noworries
-- utter_greet
-- utter_goodbye
-- utter_ask_location
-- utter_ask_facility_name
-- utter_ask_facility_type
-- find_facility_types
-- facility_action
-- details_action
-- utter_address
-forms:
-- facility_form
-- details_form
+  requested_slot:
+    type: unfeaturized

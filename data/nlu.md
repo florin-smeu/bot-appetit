@@ -147,12 +147,20 @@
 - a [restaurant](facility_type)
 - a [cafe](facility_type)
 - [Bucuresti](location)
-- [Bistro](location)
+- [Drumul Sarii](location)
+- [Tineretului](location)
+- [Calea Victoriei Bucharest](location)
 
 ## intent:search_provider
+- I want [food]{"entity": "facility_type", "value": "restaurant"}
+- I want to [eat]{"entity": "facility_type", "value": "restaurant"} something
+- I want a [coffee]{"entity": "facility_type", "value": "cafe"}
+- I want to drink a [coffee]{"entity": "facility_type", "value": "cafe"}
+- I want to drink [beer]{"entity": "facility_type", "value": "bar"}
+- I want to drink [wine]{"entity": "facility_type", "value": "bar"}
 - i need a [restaurant](facility_type)
 - find me a nearby [restaurant](facility_type)
-- show me [restaurants](facility_type)
+- show me [restaurant](facility_type)
 - [restaurant](facility_type)
 - find me a nearby [restaurant](facility_type) my zip code is [060029](location)
 - i need a [bar](facility_type)
@@ -217,11 +225,15 @@
 - Can you tell me a [cafe](facility_type) in [13 Septembrie](location) ?
 - I am in [Sectorul 1](location)
 - Hey, I need a [restaurant](facility_type) in [Aviatorilor](location)
-- How about a bistro?
-- I need a [bar]{"entity": "facility_type", "value": "9wzi-peqs"} in [Centrul Vechi](location)
+- How about a [bar](facility_type)?
+- I need a [bar](facility_type) in [Centrul Vechi](location)
 - Now I am looking for a [cafe](facility_type) in [Berceni](location)
 - I need a [restaurant](facility_type) at [Piata Victoriei](location)
 - I need a [restaurant](facility_type) in [Bucharest](location)
+- I am looking for a [restaurant](facility_type)
+- Give me a [restaurant](facility_type) in [Lujerului Bucharest](location)
+- I need the address of [restaurant](facility_type) [Capsa](facility_name) in [Bucharest](location)
+- Can you tell me where is the [bar](facility_type) called [St Partick](facility_name) in [Bucharest](location)?
 
 ## intent:thanks
 - Thanks
@@ -262,6 +274,17 @@
 - not very good
 - extremely sad
 - so sad
+
+## synonym:bar
+- beer
+- wine
+
+## synonym:cafe
+- coffee
+
+## synonym:restaurant
+- food
+- eat
 
 ## regex:location
 - [0-9]{6}
