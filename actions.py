@@ -148,7 +148,7 @@ class FacilityAction(Action):
         buttons = []
 
         # limit number of results to 3 for clear presentation purposes
-        for r in results[:3]:
+        for r in results:
             name = r["name"]
             facility_address = r["formatted_address"]
 
@@ -207,7 +207,6 @@ class DetailsForm(FormAction):
 class DetailsAction(Action):
     def name(self) -> Text:
         return "details_action"
-
 
     def run(self,
             dispatcher: CollectingDispatcher,
