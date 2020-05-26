@@ -10,13 +10,6 @@ from rasa_sdk import Action
 from rasa_sdk.events import SlotSet, FollowupAction
 from rasa_sdk.forms import FormAction
 
-# We use the medicare.gov database to find information about 3 different
-# eating facility types, given a city name, zip code or facility ID
-# the identifiers for each facility type is given by the medicare database
-# xubh-q36u is for restaurants
-# b27b-2uc7 is for restaurants
-# 9wzi-peqs is for home cafes
-
 
 API_KEY = 'AIzaSyAu-uc1As4xBhfge4l_9Aj4qZ-Vh6IJYWg'
 
@@ -167,7 +160,6 @@ class FacilityAction(Action):
             message = "Here are {} {}s near you:".format(len(buttons),
                                                          button_name)
 
-
         # TODO: update rasa core version for configurable `button_type`
         dispatcher.utter_button_message(message, buttons)
         return []
@@ -220,8 +212,9 @@ class DetailsAction(Action):
 
         facility_type = tracker.get_slot("facility_type")
         facility_name = tracker.get_slot("facility_name")
+        location = tracker.get_slot("location")
 
-        full_path = _create_path(facility_type + " " + facility_name)
+        full_path = _create_path(facility_type + " " + facility_name + " " + location + " Romania")
         print(full_path)
         results = requests.get(full_path).json()
         results = results["results"]
@@ -241,24 +234,3 @@ class DetailsAction(Action):
 
             #dispatcher.utter_message("Sorry I couldn't find the address for {}".format(facility_name))
             return [SlotSet("facility_address", "No address")]
-
-class PhotoAction(Action):
-    def name(self) -> Text:
-        return "photo_action"
-
-    def run(self,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List:
-
-
-        gt = {
-            "attachment":{
-                "type":"image",
-                "payload":{
-                    "url":"http://www.messenger-rocks.com/image.jpg",
-                    "is_reusable": "true"
-                }
-            }
-        }
-        dispatcher.utter_custom_json(gt)

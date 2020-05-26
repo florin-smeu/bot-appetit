@@ -12,7 +12,6 @@
     - form{"name": null}
     - details_action
     - utter_address
-    - photo_action
 * thanks
     - utter_noworries
 * goodbye
@@ -33,7 +32,6 @@
     - form{"name": null}
     - details_action
     - utter_address
-    - photo_action
 * search_provider{"facility_type": "restaurant"}
     - facility_form
     - form{"name": "facility_form"}
@@ -45,7 +43,6 @@
     - form{"name": null}
     - details_action
     - utter_address
-    - photo_action
 ## happy_path2
 * search_provider{"location": "Austin", "facility_type": "restaurant"}
     - facility_form
@@ -58,7 +55,6 @@
     - form{"name": null}
     - details_action
     - utter_address
-    - photo_action
 * thanks
     - utter_noworries
 * goodbye
