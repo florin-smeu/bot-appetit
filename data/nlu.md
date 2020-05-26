@@ -278,13 +278,29 @@
 ## synonym:bar
 - beer
 - wine
+- shots
+- tequila
+- cider
+- liquor
+- cocktail
 
 ## synonym:cafe
 - coffee
+- espresso
+- cappuccino
+- latte
+- iced coffee
+- macchiato
+- cold brew coffee
+- mocha
+- ristretto
 
 ## synonym:restaurant
 - food
 - eat
+- meal
+- eats
+- feed
 
 ## regex:location
 - [0-9]{6}

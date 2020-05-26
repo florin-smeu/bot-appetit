@@ -7,7 +7,7 @@ import requests
 from operator import itemgetter
 
 from rasa_sdk import Action
-from rasa_sdk.events import SlotSet, FollowupAction
+from rasa_sdk.events import SlotSet, FollowupAction, Restarted, AllSlotsReset
 from rasa_sdk.forms import FormAction
 
 
@@ -238,3 +238,16 @@ class DetailsAction(Action):
 
             #dispatcher.utter_message("Sorry I couldn't find the address for {}".format(facility_name))
             return [SlotSet("facility_address", "No address")]
+
+
+class ActionRestarted(Action):
+    def name(self):
+        return 'action_restarted'
+    def run(self, dispatcher, tracker, domain):
+        return[Restarted()]
+        
+class ActionSlotReset(Action):
+    def name(self):
+        return 'action_slot_reset'
+    def run(self, dispatcher, tracker, domain):
+        return[AllSlotsReset()]

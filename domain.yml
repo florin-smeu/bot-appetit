@@ -9,6 +9,8 @@ actions:
 - utter_goodbye
 - utter_greet
 - utter_noworries
+- action_slot_reset
+- action_restarted
 entities:
 - facility_name
 - facility_type

@@ -1,12 +1,14 @@
 ## story_thank_you
 * thanks
   - utter_noworries
-  - action_restart
+  - action_slot_reset
+  - action_restarted
 
 ## story_goodbye
 * goodbye
   - utter_goodbye
-  - action_restart
+  - action_slot_reset
+  - action_restarted
 
 ## story_get_address
 * greet
@@ -35,7 +37,8 @@
     - details_action
     - slot{"facility_address": "Parter, Calea Văcărești 203B, București, Romania"}
     - utter_address
-    - action_restart
+    - action_slot_reset
+    - action_restarted
 
 ## story_get_address_provided_facility_type
 * search_provider{"facility_type": "restaurant"}
@@ -62,7 +65,8 @@
     - details_action
     - slot{"facility_address": "Calea Victoriei 12A, București 030026, Romania"}
     - utter_address
-    - action_restart
+    - action_slot_reset
+    - action_restarted
 
 ## story_get_address_provided_facility_type_and_location
 * search_provider{"facility_type": "restaurant", "location": "Lujerului Bucharest"}
@@ -87,7 +91,8 @@
     - details_action
     - slot{"facility_address": "Intrarea Blejoi nr. 2, Bulevardul Iuliu Maniu 408-410, București 062391, Romania"}
     - utter_address
-    - action_restart
+    - action_slot_reset
+    - action_restarted
 
 ## story_get_address_provided_facility_type_and_location_and_facility_name
 * search_provider{"facility_type": "restaurant", "facility_name": "Capsa", "location": "Bucharest"}
@@ -97,4 +102,5 @@
     - details_action
     - slot{"facility_address": "Calea Victoriei 36, București 030167, Romania"}
     - utter_address
-    - action_restart
+    - action_slot_reset
+    - action_restarted
