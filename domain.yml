@@ -25,6 +25,7 @@ slots:
     type: unfeaturized
   location:
     type: unfeaturized
+
 responses:
   utter_greet:
   - text: Hi. What are you looking for?
@@ -60,6 +61,7 @@ actions:
 - find_facility_types
 - facility_action
 - details_action
+- photo_action
 - utter_address
 forms:
 - facility_form

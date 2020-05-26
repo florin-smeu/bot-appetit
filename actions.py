@@ -4,6 +4,8 @@ from rasa_sdk.executor import CollectingDispatcher
 from typing import Dict, Text, Any, List
 
 import requests
+from operator import itemgetter
+
 from rasa_sdk import Action
 from rasa_sdk.events import SlotSet, FollowupAction
 from rasa_sdk.forms import FormAction
@@ -43,7 +45,7 @@ def _create_path(query: Text) -> Text:
 def _find_facilities(location: Text, facility_type: Text) -> List[Dict]:
     """Returns json of facilities matching the search criteria."""
 
-    full_path = _create_path(facility_type + " " + location)
+    full_path = _create_path(facility_type + " " + location + " Romania")
 
     print("Full path:")
     print(full_path)
@@ -148,7 +150,10 @@ class FacilityAction(Action):
         buttons = []
 
         # limit number of results to 3 for clear presentation purposes
-        for r in results:
+        rating_sorted_results = sorted(results, key=itemgetter('rating'), reverse=True)
+
+
+        for r in rating_sorted_results[:3]:
             name = r["name"]
             facility_address = r["formatted_address"]
 
@@ -236,3 +241,24 @@ class DetailsAction(Action):
 
             #dispatcher.utter_message("Sorry I couldn't find the address for {}".format(facility_name))
             return [SlotSet("facility_address", "No address")]
+
+class PhotoAction(Action):
+    def name(self) -> Text:
+        return "photo_action"
+
+    def run(self,
+            dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List:
+
+
+        gt = {
+            "attachment":{
+                "type":"image",
+                "payload":{
+                    "url":"http://www.messenger-rocks.com/image.jpg",
+                    "is_reusable": "true"
+                }
+            }
+        }
+        dispatcher.utter_custom_json(gt)
