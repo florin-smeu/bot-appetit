@@ -10,14 +10,33 @@ from rasa_sdk import Action
 from rasa_sdk.events import SlotSet, FollowupAction, Restarted, AllSlotsReset
 from rasa_sdk.forms import FormAction
 
+from places_util import *
 
-API_KEY = 'AIzaSyAu-uc1As4xBhfge4l_9Aj4qZ-Vh6IJYWg'
 
-ENDPOINTS = {
+
+
+TEXTSEARCH_ENDPOINTS = {
     "base": "https://maps.googleapis.com/maps/api/place/textsearch/json?",
-    "query": "query={}",
-    "key": "&key={}"
+    "query": "query={}", # custom query
+    "key": "&key={}", # api key
+    "type": "&type={}", # same as in nearbysearch
+    "region": "&region=ro",
+    # minprice maxprice
+    # opennow
+    # #location
 }
+
+NEARBY_ENDPOINTS = {
+    "base": "https://maps.googleapis.com/maps/api/place/nearbysearch/json?",
+    "location": "&location={}", #latitude,longitude
+    "key": "&key={}", # api key
+    "type": "&type={}", # restaurant / bar / cafe
+    "rankby": "&rankby={}", # distance / prominence
+    "keyword": "&keyword={}", # custom term
+    # opennow
+    # minprice maxprice
+}
+
 
 FACILITY_TYPES = {
     "restaurant": {
@@ -31,14 +50,18 @@ FACILITY_TYPES = {
     }
 }
 
-def _create_path(query: Text) -> Text:
+def _create_path(query: Text, type: Text) -> Text:
     """Creates a path to find provider using the endpoints."""
-    return ENDPOINTS["base"] + ENDPOINTS["query"].format(query) + ENDPOINTS["key"].format(API_KEY)
+    return TEXTSEARCH_ENDPOINTS["base"] + \
+           TEXTSEARCH_ENDPOINTS["query"].format(query) + \
+           TEXTSEARCH_ENDPOINTS["key"].format(API_KEY) + \
+           TEXTSEARCH_ENDPOINTS["type"].format(type)
 
-def _find_facilities(location: Text, facility_type: Text) -> List[Dict]:
+
+def _find_facilities(query: Text, type: Text) -> List[Dict]:
     """Returns json of facilities matching the search criteria."""
 
-    full_path = _create_path(facility_type + " " + location + " Romania")
+    full_path = _create_path(query, type)
 
     print("Full path:")
     print(full_path)
@@ -46,12 +69,12 @@ def _find_facilities(location: Text, facility_type: Text) -> List[Dict]:
     results = requests.get(full_path).json()
     return results['results']
 
-
 def _resolve_name(facility_types, resource) -> Text:
     for key, value in facility_types.items():
         if value.get("name") == resource:
             return value.get("name")
     return ""
+
 
 
 class FindFacilityTypes(Action):
@@ -142,15 +165,14 @@ class FacilityAction(Action):
 
         buttons = []
 
-        # limit number of results to 3 for clear presentation purposes
         rating_sorted_results = sorted(results, key=itemgetter('rating'), reverse=True)
 
-
+        # limit number of results to 3 for clear presentation purposes
         for r in rating_sorted_results[:3]:
             name = r["name"]
-            facility_address = r["formatted_address"]
+            place_id = r["place_id"]
 
-            payload = "/inform{\"facility_name\":\"" + name + "\"}"
+            payload = "/inform{\"place_id\":\"" + place_id + "\"}"
             buttons.append(
                 {"title": "{}".format(name), "payload": payload})
 
@@ -178,13 +200,13 @@ class DetailsForm(FormAction):
     def required_slots(tracker: Tracker) -> List[Text]:
             """A list of required slots that the form has to fill"""
 
-            return ["facility_type", "facility_name", "location"]
+            return ["facility_type", "place_id", "location"]
 
     def slot_mappings(self) -> Dict[Text, Any]:
         return {"facility_type": self.from_entity(entity="facility_type",
                                                   intent=["inform",
                                                           "search_provider"]),
-                "facility_name": self.from_entity(entity="facility_name",
+                "place_id": self.from_entity(entity="place_id",
                                                   intent=["inform",
                                                           "search_provider"]),
                 "location": self.from_entity(entity="location",
@@ -198,10 +220,10 @@ class DetailsForm(FormAction):
                ) -> List[Dict]:
 
         facility_type = tracker.get_slot("facility_type")
-        facility_name = tracker.get_slot("facility_name")
+        place_id = tracker.get_slot("place_id")
         location = tracker.get_slot("location")
 
-        message = "I am now searching for details for the {} {}".format(facility_name, facility_type)
+        message = "I am now searching for details for the {} {}".format(place_id, facility_type)
         dispatcher.utter_message(message)
         return []
 
@@ -215,20 +237,16 @@ class DetailsAction(Action):
             domain: Dict[Text, Any]) -> List:
 
         facility_type = tracker.get_slot("facility_type")
-        facility_name = tracker.get_slot("facility_name")
+        place_id = tracker.get_slot("place_id")
         location = tracker.get_slot("location")
 
-        full_path = _create_path(facility_type + " " + facility_name + " " + location + " Romania")
-        print(full_path)
-        results = requests.get(full_path).json()
-        results = results["results"]
-        if results:
-            print(results)
-            selected = results[0]
-            address = selected["formatted_address"]
+        details = Details(place_id)
+        details_path = details.create_details_path()
+        print(details_path)
+        success = details.retrieve()
 
-            #dispatcher.utter_message("The address of {} is {}".format(facility_name, address))
-            return [SlotSet("facility_address", address)]
+        if success is True:
+            return [SlotSet("facility_details", details.__dict__)]
         else:
             print("No address found. Most likely this action was executed "
                   "before the user choose a eating facility from the "
@@ -236,8 +254,8 @@ class DetailsAction(Action):
                   "If this is a common problem in your dialogue flow,"
                   "using a form instead for this action might be appropriate.")
 
-            #dispatcher.utter_message("Sorry I couldn't find the address for {}".format(facility_name))
-            return [SlotSet("facility_address", "No address")]
+            dispatcher.utter_message("Sorry I couldn't find details for {}".format(place_id))
+            return [SlotSet("facility_details", "No details")]
 
 
 class PhotosAction(Action):
@@ -249,12 +267,21 @@ class PhotosAction(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List:
 
-        facility_type = tracker.get_slot("facility_type")
-        facility_name = tracker.get_slot("facility_name")
+        facility_details = tracker.get_slot("facility_details")
+        place_id = tracker.get_slot("place_id")
         location = tracker.get_slot("location")
 
-        message = "Here are some photos for {} in {}".format(facility_name, location)
+        photo_paths = []
+        for photo in facility_details["photos"][:2]:
+            photo_obj = Photo(height=photo["height"],
+                              width=photo["width"],
+                              photo_reference=photo["photo_reference"],
+                              html_attributions=photo["html_attributions"])
+            photo_paths.append(photo_obj.create_photo_path())
+
+        message = "Here are some photos for {} in {}".format(place_id, location)
         dispatcher.utter_message(message)
+
         gt = {
             "attachment": {
                 "type": "template",
@@ -262,8 +289,8 @@ class PhotosAction(Action):
                     "template_type": "generic",
                     "elements": [
                         {
-                            "title": "Welcome! 1",
-                            "image_url": "https://picsum.photos/200",
+                            "title": facility_details["name"],
+                            "image_url": photo_paths[0],
                             "subtitle": "We have the right hat for everyone.",
                             "default_action": {
                                 "type": "web_url",
@@ -284,8 +311,8 @@ class PhotosAction(Action):
                             ]
                         },
                         {
-                            "title": "Welcome! 2",
-                            "image_url": "https://picsum.photos/200",
+                            "title": facility_details["name"],
+                            "image_url": photo_paths[1],
                             "subtitle": "We have the right hat for everyone.",
                             "default_action": {
                                 "type": "web_url",

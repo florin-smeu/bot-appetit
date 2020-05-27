@@ -2,8 +2,8 @@ actions:
 - details_action
 - facility_action
 - find_facility_types
-- utter_address
-- utter_ask_facility_name
+- utter_details
+- utter_ask_place_id
 - utter_ask_facility_type
 - utter_ask_location
 - utter_goodbye
@@ -13,7 +13,7 @@ actions:
 - action_slot_reset
 - action_restarted
 entities:
-- facility_name
+- place_id
 - facility_type
 - location
 forms:
@@ -31,11 +31,11 @@ intents:
 - thanks
 - out_of_scope
 responses:
-  utter_address:
-  - text: The address of {facility_name} is {facility_address}.
-  utter_ask_facility_name:
+  utter_details:
+  - text: The details of {place_id} is {facility_details}.
+  utter_ask_place_id:
   - text: Which {facility_type} would you like?
-  - text: Oops! I still need the {facility_type} name to find its address.
+  - text: Oops! I still need the {facility_type} id to find its address.
   utter_ask_facility_type:
   - text: Should I search for a restaurant, bar or a cafe?
   utter_ask_location:
@@ -59,13 +59,15 @@ session_config:
   carry_over_slots_to_new_session: true
   session_expiration_time: 60
 slots:
-  facility_address:
-    type: unfeaturized
-  facility_name:
+  place_id:
     type: unfeaturized
   facility_type:
     type: unfeaturized
   location:
+    type: unfeaturized
+  facility_details:
+    type: unfeaturized
+  facility_photos:
     type: unfeaturized
   requested_slot:
     type: unfeaturized
