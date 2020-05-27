@@ -9,6 +9,7 @@ actions:
 - utter_goodbye
 - utter_greet
 - utter_noworries
+- photos_action
 - action_slot_reset
 - action_restarted
 entities:

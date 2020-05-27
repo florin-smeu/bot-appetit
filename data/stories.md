@@ -36,6 +36,7 @@
     - slot{"requested_slot": null}
     - details_action
     - slot{"facility_address": "Parter, Calea Văcărești 203B, București, Romania"}
+    - photos_action
     - utter_address
     - action_slot_reset
     - action_restarted
@@ -64,6 +65,7 @@
     - slot{"requested_slot": null}
     - details_action
     - slot{"facility_address": "Calea Victoriei 12A, București 030026, Romania"}
+    - photos_action
     - utter_address
     - action_slot_reset
     - action_restarted
@@ -90,6 +92,7 @@
     - slot{"requested_slot": null}
     - details_action
     - slot{"facility_address": "Intrarea Blejoi nr. 2, Bulevardul Iuliu Maniu 408-410, București 062391, Romania"}
+    - photos_action
     - utter_address
     - action_slot_reset
     - action_restarted
@@ -101,6 +104,7 @@
     - slot{"location": "Bucharest"}
     - details_action
     - slot{"facility_address": "Calea Victoriei 36, București 030167, Romania"}
+    - photos_action
     - utter_address
     - action_slot_reset
     - action_restarted

@@ -240,12 +240,85 @@ class DetailsAction(Action):
             return [SlotSet("facility_address", "No address")]
 
 
+class PhotosAction(Action):
+    def name(self) -> Text:
+        return "photos_action"
+
+    def run(self,
+            dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List:
+
+        facility_type = tracker.get_slot("facility_type")
+        facility_name = tracker.get_slot("facility_name")
+        location = tracker.get_slot("location")
+
+        message = "Here are some photos for {} in {}".format(facility_name, location)
+        dispatcher.utter_message(message)
+        gt = {
+            "attachment": {
+                "type": "template",
+                "payload": {
+                    "template_type": "generic",
+                    "elements": [
+                        {
+                            "title": "Welcome! 1",
+                            "image_url": "https://picsum.photos/200",
+                            "subtitle": "We have the right hat for everyone.",
+                            "default_action": {
+                                "type": "web_url",
+                                "url": "https://tithal.life",
+                                "webview_height_ratio": "tall",
+                            },
+                            "buttons": [
+                                {
+                                    "type": "web_url",
+                                    "url": "https://tithal.life",
+                                    "title": "View Website"
+                                },
+                                {
+                                    "type": "postback",
+                                    "title": "Start Chatting",
+                                    "payload": "DEVELOPER_DEFINED_PAYLOAD"
+                                }
+                            ]
+                        },
+                        {
+                            "title": "Welcome! 2",
+                            "image_url": "https://picsum.photos/200",
+                            "subtitle": "We have the right hat for everyone.",
+                            "default_action": {
+                                "type": "web_url",
+                                "url": "https://tithal.life",
+                                "webview_height_ratio": "tall",
+                            },
+                            "buttons": [
+                                {
+                                    "type": "web_url",
+                                    "url": "https://tithal.life",
+                                    "title": "View Website"
+                                },
+                                {
+                                    "type": "postback",
+                                    "title": "Start Chatting",
+                                    "payload": "DEVELOPER_DEFINED_PAYLOAD"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+        dispatcher.utter_custom_json(gt)
+        return []
+
+
 class ActionRestarted(Action):
     def name(self):
         return 'action_restarted'
     def run(self, dispatcher, tracker, domain):
         return[Restarted()]
-        
+
 class ActionSlotReset(Action):
     def name(self):
         return 'action_slot_reset'
