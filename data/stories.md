@@ -39,7 +39,7 @@
     - details_action
     - slot{"facility_details": "foo_details"}
     - photos_action
-    - utter_details
+    - provide_details_action
     - action_slot_reset
     - action_restarted
 
@@ -70,7 +70,7 @@
     - details_action
     - slot{"facility_details": "foo_details"}
     - photos_action
-    - utter_details
+    - provide_details_action
     - action_slot_reset
     - action_restarted
 
@@ -99,7 +99,7 @@
     - details_action
     - slot{"facility_details": "foo_details"}
     - photos_action
-    - utter_details
+    - provide_details_action
     - action_slot_reset
     - action_restarted
 
@@ -112,6 +112,6 @@
     - details_action
     - slot{"facility_details": "foo_details"}
     - photos_action
-    - utter_details
+    - provide_details_action
     - action_slot_reset
     - action_restarted

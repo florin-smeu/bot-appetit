@@ -40,6 +40,7 @@ class Details:
 
     def __init__(self, place_id):
         self.place_id = place_id
+        self.create_details_path()
 
     def create_details_path(self):
         """Creates a path to find provider using the endpoints."""
@@ -150,7 +151,7 @@ class MessengerUtil:
     """Class that stores util fields and methods for posting messages to
     Facebook Messenger"""
 
-    MAX_PHOTOS = 4
+    MAX_PHOTOS = 10
 
     @staticmethod
     def create_template_button_url(title, url):
@@ -195,7 +196,7 @@ class MessengerUtil:
             "image_url": image_url,
             "subtitle": subtitle,
             "default_action": default_action,
-            "buttons": buttons
+            #"buttons": buttons
         }
 
     MAPS_ENDPOINTS = "https://www.google.com/maps/search/?api=1&query={}&query_place_id={}"
@@ -472,8 +473,6 @@ class DetailsAction(Action):
         facility_name = tracker.get_slot("facility_name")
 
         details = Details(place_id)
-        details_path = details.create_details_path()
-        print(details_path)
         success = details.retrieve()
 
         if success is True:
@@ -533,6 +532,48 @@ class PhotosAction(Action):
 
         dispatcher.utter_message(json_message=template)
         return []
+
+
+class ProvideDetailsAction(Action):
+    def name(self) -> Text:
+        return "provide_details_action"
+
+
+    def run(self,
+            dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List:
+
+        facility_details = tracker.get_slot("facility_details")
+        facility_type = tracker.get_slot("facility_type")
+
+        rate_message = "The price level is {}/5 and the rating is {}".format(facility_details["price_level"],
+                                                                           facility_details["rating"])
+
+        address_message = "The address is {}".format(facility_details["address"])
+        phone_message = "You can call {} at {}".format(facility_details["name"],
+                                                       facility_details["international_phone_number"])
+
+        website_message = "Find out more details about the {} at {}".format(facility_type,
+                                                                            facility_details["website"])
+
+        weekday_text = ""
+        for day in facility_details["opening_hours"]["weekday_text"]:
+            weekday_text += day + "\n"
+
+        open_hours_message = "The program is\n{}".format(weekday_text)
+
+        if facility_details["opening_hours"]["open_now"] is False:
+            open_now_message = "And the {} is not open now :(".format(facility_type)
+        elif facility_details["opening_hours"]["open_now"] is True:
+            open_now_message = "And the {} is open now ;)".format(facility_type)
+
+        dispatcher.utter_message(rate_message)
+        dispatcher.utter_message(address_message)
+        dispatcher.utter_message(phone_message)
+        dispatcher.utter_message(website_message)
+        dispatcher.utter_message(open_hours_message)
+        dispatcher.utter_message(open_now_message)
 
 
 class ActionRestarted(Action):

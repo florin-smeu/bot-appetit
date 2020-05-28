@@ -2,7 +2,7 @@ actions:
 - details_action
 - facility_action
 - find_facility_types
-- utter_details
+- provide_details_action
 - utter_ask_place_id
 - utter_ask_facility_type
 - utter_ask_location
@@ -32,8 +32,6 @@ intents:
 - thanks
 - out_of_scope
 responses:
-  utter_details:
-  - text: The details of {place_id} is {facility_details}.
   utter_ask_place_id:
   - text: Which {facility_type} would you like?
   - text: Oops! I still need the {facility_type} id to find its address.
