@@ -13,6 +13,8 @@ from rasa_sdk.forms import FormAction
 
 API_KEY = 'AIzaSyAu-uc1As4xBhfge4l_9Aj4qZ-Vh6IJYWg'
 DEFAULT_WEBSITE = "https://bot-appetit.com"
+DEFAULT_PROTOCOL = "https"
+
 
 class Facility:
     """Wrapper class that encapsulates all  the information about a facility"""
@@ -102,7 +104,7 @@ class Details:
 class Photo:
     """Class that stores all the information about a photo of a facility"""
     #MAX_WIDTH = 764
-    MAX_WIDTH = 400
+    MAX_WIDTH = 700
 
     ENDPOINTS = {
         "base": "https://maps.googleapis.com/maps/api/place/photo?",
@@ -169,7 +171,7 @@ class MessengerUtil:
     @staticmethod
     def create_buttons(website):
         buttons = []
-        if website != DEFAULT_WEBSITE:
+        if website != DEFAULT_WEBSITE and website[:5] == DEFAULT_PROTOCOL:
             url_button = MessengerUtil.create_template_button_url(title="view website",
                                                                   url=website)
             buttons.append(url_button)
@@ -196,12 +198,14 @@ class MessengerUtil:
             "buttons": buttons
         }
 
+    MAPS_ENDPOINTS = "https://www.google.com/maps/search/?api=1&query={}&query_place_id={}"
+
     @staticmethod
-    def create_elements(photos, buttons, title):
+    def create_elements(photos, buttons, title, place_id, facility_type):
         elements = []
         for photo in photos:
             default_action = MessengerUtil.create_default_action(type="web_url",
-                                                                 url=photo.url)
+                                                                 url=MessengerUtil.MAPS_ENDPOINTS.format(facility_type, place_id))
             subtitle = "powered by Google \nphoto author: "
             for author in photo.authors:
                 subtitle += author + " "
@@ -292,7 +296,6 @@ def _resolve_name(facility_types, resource) -> Text:
     return ""
 
 
-
 class FindFacilityTypes(Action):
     """This action class allows to display buttons for each facility type
     for the user to chose from to fill the facility_type entity slot."""
@@ -359,6 +362,7 @@ class FacilityForm(FormAction):
         message = "I am now searching for {}s in {}".format(facility_type, location)
         dispatcher.utter_message(message)
         return []
+
 
 class FacilityAction(Action):
     MAX_FACILITIES = 10
@@ -452,6 +456,7 @@ class DetailsForm(FormAction):
         dispatcher.utter_message(message)
         return []
 
+
 class DetailsAction(Action):
     def name(self) -> Text:
         return "details_action"
@@ -498,6 +503,7 @@ class PhotosAction(Action):
         place_id = tracker.get_slot("place_id")
         location = tracker.get_slot("location")
         facility_name = tracker.get_slot("facility_name")
+        facility_type = tracker.get_slot("facility_type")
 
         photos = []
         photo_counter = 0
@@ -518,6 +524,8 @@ class PhotosAction(Action):
 
         buttons = MessengerUtil.create_buttons(website=facility_details["website"])
         elements = MessengerUtil.create_elements(title=facility_details["name"],
+                                                 place_id=place_id,
+                                                 facility_type=facility_type,
                                                  photos=photos,
                                                  buttons=buttons)
         template = MessengerUtil.create_template_message(template_type="generic",
