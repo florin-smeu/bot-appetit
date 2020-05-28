@@ -13,119 +13,137 @@ from rasa_sdk.forms import FormAction
 import json
 
 
-API_KEY = 'AIzaSyAu-uc1As4xBhfge4l_9Aj4qZ-Vh6IJYWg'
-
-class Facility:
-    """Wrapper class that encapsulates all  the information about a facility"""
-    def __init__(self):
-        self.photo_index = 0
-
-    def set_details(self, details):
-        self.details = details
-
-    def set_photos(self, photos):
-        self.photos = photos
 
 
-class Details:
-    """Class that stores all the details a facility can offer"""
-    ENDPOINTS = {
-        "base": "https://maps.googleapis.com/maps/api/place/details/json?",
-        "place_id": "place_id={}",
-        "fields": "&fields=photo",
-        "key": "&key={}",
-    }
-
-    def __init__(self, place_id):
-        self.place_id = place_id
-
-    def create_details_path(self):
-        """Creates a path to find provider using the endpoints."""
-        self.path = Details.ENDPOINTS["base"] + \
-                    Details.ENDPOINTS["place_id"].format(self.place_id) + \
-                    Details.ENDPOINTS["key"].format(API_KEY)
-
-        return self.path
-
-    def retrieve(self):
-        path = self.create_details_path()
-
-        if self.path is None:
-            print("[ERROR] Path is None for", self.place_id)
-            return False
-
-        result = requests.get(self.path).json()
-        if result["status"] != "OK":
-            print("[ERROR] The status is not OK for", self.place_id, result["status"])
-            return False
-
-        result = result["result"]
-
-        #with open("details" + result["name"].replace(" ", "") + ".json", "w") as f:
-        #    json.dump(result, f, ensure_ascii=False, indent=4)
-
-        if "opening_hours" in result:
-            self.opening_hours = result["opening_hours"]
-
-        if "photos" in result:
-            self.photos = result["photos"]
-
-        if "international_phone_number" in result:
-            self.international_phone_number = result["international_phone_number"]
-
-        if "name" in result:
-            self.name = result["name"]
-
-        if "formatted_address" in result:
-            self.address = result["formatted_address"]
-
-        if "price_level" in result:
-            self.price_level = result["price_level"]
-
-        if "rating" in result:
-            self.rating = result["rating"]
-
-        if "reviews" in result:
-            self.reviews = result["reviews"]
-
-        if "user_ratings_total" in result:
-            self.user_ratings_total = result["user_ratings_total"]
-
-        if "website" in result:
-            self.website = result["website"]
-
-        return True
+        gt = {
+            "attachment": {
+                "type": "template",
+                "payload": {
+                    "template_type": "generic",
+                    "elements": [
+                        {
+                            "title": facility_details["name"],
+                            "image_url": photo_paths[0],
+                            "subtitle": "We have the right hat for everyone.",
+                            "default_action": {
+                                "type": "web_url",
+                                "url": "https://tithal.life",
+                                "webview_height_ratio": "tall",
+                            },
+                            "buttons": [
+                                {
+                                    "type": "web_url",
+                                    "url": "https://tithal.life",
+                                    "title": "View Website"
+                                },
+                                {
+                                    "type": "postback",
+                                    "title": "Start Chatting",
+                                    "payload": "DEVELOPER_DEFINED_PAYLOAD"
+                                }
+                            ]
+                        },
+                        {
+                            "title": facility_details["name"],
+                            "image_url": photo_paths[1],
+                            "subtitle": "We have the right hat for everyone.",
+                            "default_action": {
+                                "type": "web_url",
+                                "url": "https://tithal.life",
+                                "webview_height_ratio": "tall",
+                            },
+                            "buttons": [
+                                {
+                                    "type": "web_url",
+                                    "url": "https://tithal.life",
+                                    "title": "View Website"
+                                },
+                                {
+                                    "type": "postback",
+                                    "title": "Start Chatting",
+                                    "payload": "DEVELOPER_DEFINED_PAYLOAD"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
 
 
-class Photo:
-    """Class that stores all the information about a photo of a facility"""
-    #MAX_WIDTH = 764
-    MAX_WIDTH = 400
+class MessengerUtil:
+    """Class that stores util fields and methods for posting messages to
+    Facebook Messenger"""
 
-    ENDPOINTS = {
-        "base": "https://maps.googleapis.com/maps/api/place/photo?",
-        "maxwidth": "maxwidth={}",
-        "photoreference": "&photoreference={}",
-        "key": "&key={}"
-    }
+    MAX_PHOTOS = 4
 
-    def __init__(self, height, width, photo_reference, html_attributions):
-        self.maxwidth = min(min(height, width), Photo.MAX_WIDTH)
-        self.photo_reference = photo_reference
-        self.html_attributions = html_attributions
+    @staticmethod
+    def create_template_button_url(title, url):
+        return {
+            "type": "web_url",
+            "title": title,
+            "url": url
+        }
 
-    def create_photo_path(self):
-        self.path = Photo.ENDPOINTS["base"] + \
-                    Photo.ENDPOINTS["maxwidth"].format(self.maxwidth) + \
-                    Photo.ENDPOINTS["photoreference"].format(self.photo_reference) + \
-                    Photo.ENDPOINTS["key"].format(API_KEY)
+    @staticmethod
+    def create_template_button_postback(title, payload):
+        return {
+            "type": "postback",
+            "title": title,
+            "payload": payload,
+        }
 
-        return self.path
+    @staticmethod
+    def create_buttons(website):
+        buttons = []
+        if website is not None:
+            url_button = MessengerUtil.create_template_button_url("view website", website)
+            buttons.append(url_button)
+        postback_button = MessengerUtil.create_template_button_postback("more details", "DEVELOPER_DEFINED_PAYLOAD")
+        buttons.append(postback_button)
+        return buttons
 
-    def retrieve(self):
-        return requests.get(self.path)
+    @staticmethod
+    def create_default_action(type, url):
+        return {
+            "type": type,
+            "url": "https://bot-appetit.com",
+            "webview_height_ratio": "tall",
+        }
 
+    @staticmethod
+    def create_template_element(title, image_url, subtitle, default_action, buttons):
+        return {
+            "title": title,
+            "image_url": image_url,
+            "subtitle": subtitle,
+            "default_action": default_action,
+            "buttons": buttons
+        }
 
+    @staticmethod
+    def create_elements(photo_paths, default_action, buttons):
+        elements = []
+        for photo_path in photo_paths:
+            element = create_template_element(title="title",
+                                              image_url=photo_path,
+                                              subtitle="subtitle",
+                                              default_action=default_action,
+                                              buttons=buttons)
+            elements.append(element)
+        return elements
+
+    @staticmethod
+    def create_template_message(template_type, elements):
+        return {
+            "attachment": {
+                "type": "template",
+                "payload": {
+                    "template_type": template_type,
+                    "elements": elements
+                }
+            }
+        }
 
 
     """def main():

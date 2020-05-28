@@ -15,6 +15,7 @@ actions:
 entities:
 - place_id
 - facility_type
+- facility_name
 - location
 forms:
 - details_form
@@ -60,6 +61,8 @@ session_config:
   session_expiration_time: 60
 slots:
   place_id:
+    type: unfeaturized
+  facility_name:
     type: unfeaturized
   facility_type:
     type: unfeaturized
