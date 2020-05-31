@@ -235,6 +235,90 @@
 - I need the address of [restaurant](facility_type) [Capsa](facility_name) in [Bucharest](location)
 - Can you tell me where is the [bar](facility_type) called [St Partick](facility_name) in [Bucharest](location)?
 
+## intent:ask_price
+- Is it pricy?
+- How much does it cost?
+- Cost?
+- Can you tell me more about the prices there?
+- How much money?
+- Is it expensive?
+- I need a cheap option
+- How expensive it is?
+- How cheap it is?
+- Is it cheap?
+
+## intent:ask_atmosphere
+- How is the [restaurant](facility_type)?
+- How is the [cafe](facility_type)?
+- How is the [bar](facility_type)?
+- Can you show me some rating info?
+- How is this rated?
+- Is it a good [restaurant](facility_type)?
+- Is it a good [cafe](facility_type)?
+- Is it a good [bar](facility_type)?
+- Can you tell me more about it?
+
+## intent:ask_phone
+- Can I call them?
+- Call
+- Phone number
+- Telephone
+
+## intent:ask_website
+- Do they have a website?
+- Show me a website
+- internet
+- website
+
+## intent:ask_address
+- address
+- location
+- How can I get there?
+- Can you tell me the address?
+- How can I reach them?
+- I need an address
+- How to get there?
+- Where is it?
+- Is it near?
+- Is it far?
+
+## intent:ask_schedule
+- Are they open now?
+- Is it closed?
+- I need a programme
+- Can you show me a programme?
+- Can you show me their schedule?
+- Can I go there now?
+- Is it open?
+- Give me their schedule
+- I want to know wether they are open now
+- Can you tell me if it's open now?
+- When can I go there?
+
+## intent:ask_help
+- Seems like a problem
+- I need help
+- Can you help me?
+- help
+- You got a problem
+
+## intent:more_results
+- Can you show me other [restaurant](facility_type)s?
+- Can you show me other [cafe](facility_type)s?
+- Can you show me other [bar](facility_type)s?
+- More results
+- Show me other
+- Give me other results
+- Can you show me more [restaurant](facility_type)s?
+- Can you show me more [bar](facility_type)s?
+- Can you show me more [cafe](facility_type)s?
+
+## intent:restart
+- restart the conversation
+- restart
+- I want to search for new places
+- Enough of that, restart
+
 ## intent:thanks
 - Thanks
 - Thank you
@@ -252,6 +336,7 @@
 - cool, thanks
 - cool thank you
 - Thanks a lot
+- Dude thanks
 
 ## intent:mood_great
 - perfect

@@ -4,30 +4,67 @@ from rasa_sdk.executor import CollectingDispatcher
 from typing import Dict, Text, Any, List
 
 import requests
+import math
+import random
 from operator import itemgetter
 
 from rasa_sdk import Action
 from rasa_sdk.events import SlotSet, FollowupAction, Restarted, AllSlotsReset
 from rasa_sdk.forms import FormAction
 
-
 API_KEY = 'AIzaSyAu-uc1As4xBhfge4l_9Aj4qZ-Vh6IJYWg'
 DEFAULT_WEBSITE = "https://bot-appetit.com"
 DEFAULT_PROTOCOL = "https"
-
-
-class Facility:
-    """Wrapper class that encapsulates all  the information about a facility"""
-    def __init__(self):
-        self.photo_index = 0
-
-    def set_details(self, details):
-        self.details = details
-
-    def set_photos(self, photos):
-        self.photos = photos
-
-
+NO_PHOTO = "no_photo"
+EMOJIES = {
+    "smirking_face": u'\U0001F4B8',
+    "thinking_face": u'\U0001F914',
+    "sweat_smile": u'\U0001F605',
+    "laughing_face": u'\U0001F602',
+    "burger": u'\U0001F354',
+    "coffee": u'\U00002615',
+    "cocktail": u'\U0001F379',
+    "star": u'\U00002B50',
+    "money": u'\U0001F4B8',
+    "pin": u'\U0001F4CC',
+    "phone": u'\U0000260E',
+    "calendar": u'\U0001F4C6',
+    "world": u'\U0001F30D',
+}
+TEXTSEARCH_ENDPOINTS = {
+    "base": "https://maps.googleapis.com/maps/api/place/textsearch/json?",
+    "query": "query={}", # custom query
+    "key": "&key={}", # api key
+    "type": "&type={}", # same as in nearbysearch
+    "region": "&region=ro",
+    # minprice maxprice
+    # opennow
+    # #location
+}
+NEARBY_ENDPOINTS = {
+    "base": "https://maps.googleapis.com/maps/api/place/nearbysearch/json?",
+    "location": "&location={}", #latitude,longitude
+    "key": "&key={}", # api key
+    "type": "&type={}", # restaurant / bar / cafe
+    "rankby": "&rankby={}", # distance / prominence
+    "keyword": "&keyword={}", # custom term
+    # opennow
+    # minprice maxprice
+}
+FACILITY_TYPES = {
+    "restaurant": {
+        "name": "restaurant",
+        "emoji": EMOJIES["burger"],
+    },
+    "bar": {
+        "name": "bar",
+        "emoji": EMOJIES["cocktail"],
+    },
+    "cafe": {
+        "name": "cafe",
+        "emoji": EMOJIES["coffee"],
+    }
+}
 
 class Details:
     """Class that stores all the details a facility can offer"""
@@ -101,7 +138,6 @@ class Details:
 
         return True
 
-
 class Photo:
     """Class that stores all the information about a photo of a facility"""
     #MAX_WIDTH = 764
@@ -146,12 +182,13 @@ class Photo:
     def retrieve(self):
         return requests.get(self.path)
 
-
 class MessengerUtil:
     """Class that stores util fields and methods for posting messages to
     Facebook Messenger"""
 
     MAX_PHOTOS = 10
+    MAPS_ENDPOINTS = "https://www.google.com/maps/search/?api=1&query={}&query_place_id={}"
+
 
     @staticmethod
     def create_template_button_url(title, url):
@@ -170,14 +207,14 @@ class MessengerUtil:
         }
 
     @staticmethod
-    def create_buttons(website):
+    def create_buttons(website, postback_payload):
         buttons = []
         if website != DEFAULT_WEBSITE and website[:5] == DEFAULT_PROTOCOL:
             url_button = MessengerUtil.create_template_button_url(title="view website",
                                                                   url=website)
             buttons.append(url_button)
         postback_button = MessengerUtil.create_template_button_postback(title="more details",
-                                                                        payload="DEVELOPER_DEFINED_PAYLOAD")
+                                                                        payload=postback_payload)
         buttons.append(postback_button)
         return buttons
 
@@ -191,31 +228,46 @@ class MessengerUtil:
 
     @staticmethod
     def create_template_element(title, image_url, subtitle, default_action, buttons):
+        if len(buttons) == 0:
+            return {
+                "title": title,
+                "image_url": image_url,
+                "subtitle": subtitle,
+                "default_action": default_action,
+            }
         return {
             "title": title,
             "image_url": image_url,
             "subtitle": subtitle,
             "default_action": default_action,
-            #"buttons": buttons
+            "buttons": buttons
         }
-
-    MAPS_ENDPOINTS = "https://www.google.com/maps/search/?api=1&query={}&query_place_id={}"
 
     @staticmethod
     def create_elements(photos, buttons, title, place_id, facility_type):
         elements = []
+
         for photo in photos:
             default_action = MessengerUtil.create_default_action(type="web_url",
                                                                  url=MessengerUtil.MAPS_ENDPOINTS.format(facility_type, place_id))
-            subtitle = "powered by Google \nphoto author: "
-            for author in photo.authors:
-                subtitle += author + " "
-            element = MessengerUtil.create_template_element(title=title,
-                                              image_url=photo.path,
-                                              subtitle=subtitle,
-                                              default_action=default_action,
-                                              buttons=buttons)
+
+            if photo == NO_PHOTO:
+                element = MessengerUtil.create_template_element(title=title,
+                                                                image_url="",
+                                                                subtitle="",
+                                                                default_action=default_action,
+                                                                buttons=buttons)
+            else:
+                subtitle = "powered by Google \nphoto author: "
+                for author in photo.authors:
+                    subtitle += author + " "
+                    element = MessengerUtil.create_template_element(title=title,
+                                                                    image_url=photo.path,
+                                                                    subtitle=subtitle,
+                                                                    default_action=default_action,
+                                                                    buttons=buttons)
             elements.append(element)
+
         return elements
 
 
@@ -232,72 +284,7 @@ class MessengerUtil:
             }
         }
 
-
-TEXTSEARCH_ENDPOINTS = {
-    "base": "https://maps.googleapis.com/maps/api/place/textsearch/json?",
-    "query": "query={}", # custom query
-    "key": "&key={}", # api key
-    "type": "&type={}", # same as in nearbysearch
-    "region": "&region=ro",
-    # minprice maxprice
-    # opennow
-    # #location
-}
-
-NEARBY_ENDPOINTS = {
-    "base": "https://maps.googleapis.com/maps/api/place/nearbysearch/json?",
-    "location": "&location={}", #latitude,longitude
-    "key": "&key={}", # api key
-    "type": "&type={}", # restaurant / bar / cafe
-    "rankby": "&rankby={}", # distance / prominence
-    "keyword": "&keyword={}", # custom term
-    # opennow
-    # minprice maxprice
-}
-
-
-FACILITY_TYPES = {
-    "restaurant": {
-        "name": "restaurant",
-        "emoji": u'\U0001F354'
-    },
-    "bar": {
-        "name": "bar",
-        "emoji": u'\U0001F379'
-    },
-    "cafe": {
-        "name": "cafe",
-        "emoji": u'\U00002615'
-    }
-}
-
-def _create_path(query: Text, type: Text) -> Text:
-    """Creates a path to find provider using the endpoints."""
-    return TEXTSEARCH_ENDPOINTS["base"] + \
-           TEXTSEARCH_ENDPOINTS["query"].format(query) + \
-           TEXTSEARCH_ENDPOINTS["key"].format(API_KEY) + \
-           TEXTSEARCH_ENDPOINTS["type"].format(type)
-
-
-def _find_facilities(query: Text, type: Text) -> List[Dict]:
-    """Returns json of facilities matching the search criteria."""
-
-    full_path = _create_path(query, type)
-
-    print("Full path:")
-    print(full_path)
-
-    results = requests.get(full_path).json()
-    return results['results']
-
-def _resolve_name(facility_types, resource) -> Text:
-    for key, value in facility_types.items():
-        if value.get("name") == resource:
-            return value.get("name")
-    return ""
-
-
-class FindFacilityTypes(Action):
+class GetFacilityTypeAction(Action):
     """This action class allows to display buttons for each facility type
     for the user to chose from to fill the facility_type entity slot."""
 
@@ -325,7 +312,6 @@ class FindFacilityTypes(Action):
 
         dispatcher.utter_message(template="utter_greet", buttons=buttons)
         return []
-
 
 class FacilityForm(FormAction):
     """Custom form action to fill all slots required to find specific type
@@ -364,9 +350,35 @@ class FacilityForm(FormAction):
         dispatcher.utter_message(message)
         return []
 
-
-class FacilityAction(Action):
+class FindFacilitiesAction(Action):
     MAX_FACILITIES = 10
+
+    @staticmethod
+    def _resolve_name(facility_types, resource) -> Text:
+        for key, value in facility_types.items():
+            if value.get("name") == resource:
+                return value.get("name")
+        return ""
+
+    @staticmethod
+    def _create_path(query: Text, type: Text) -> Text:
+        """Creates a path to find provider using the endpoints."""
+        return TEXTSEARCH_ENDPOINTS["base"] + \
+               TEXTSEARCH_ENDPOINTS["query"].format(query) + \
+               TEXTSEARCH_ENDPOINTS["key"].format(API_KEY) + \
+               TEXTSEARCH_ENDPOINTS["type"].format(type)
+
+    @staticmethod
+    def _find_facilities(query: Text, type: Text) -> List[Dict]:
+        """Returns json of facilities matching the search criteria."""
+
+        full_path = FacilityAction._create_path(query, type)
+
+        print("Full path:")
+        print(full_path)
+
+        results = requests.get(full_path).json()
+        return results['results']
 
     def name(self) -> Text:
         return "facility_action"
@@ -379,38 +391,53 @@ class FacilityAction(Action):
         location = tracker.get_slot('location')
         facility_type = tracker.get_slot('facility_type')
 
-        results = _find_facilities(location, facility_type)
-        button_name = _resolve_name(FACILITY_TYPES, facility_type)
+        results = FacilityAction._find_facilities(location, facility_type)
+        button_name = FacilityAction._resolve_name(FACILITY_TYPES, facility_type)
         if len(results) == 0:
             dispatcher.utter_message(
                 "Sorry, we could not find a {} in {}.".format(button_name,
                                                               location.title()))
             return []
 
-        buttons = []
-
         rating_sorted_results = sorted(results, key=itemgetter('rating'), reverse=True)
 
-        # limit number of results to 3 for clear presentation purposes
         max_facilities = min(FacilityAction.MAX_FACILITIES, len(rating_sorted_results))
-        for r in rating_sorted_results[:3]:
-            name = r["name"]
-            place_id = r["place_id"]
-
+        elements=[]
+        for facility in rating_sorted_results[:max_facilities]:
+            name = facility["name"]
+            place_id = facility["place_id"]
             payload = "/inform{\"place_id\":\"" + place_id + "\", \"facility_name\":\"" + name + "\"}"
-            buttons.append(
-                {"title": "{}".format(name), "payload": payload})
 
-        if len(buttons) == 1:
-            message = "Here is a {} near you:".format(button_name)
+            if "photos" in facility and len(facility["photos"]) > 0:
+                facility_photo = facility["photos"][0]
+
+                photo = Photo(height=facility_photo["height"],
+                              width=facility_photo["width"],
+                              photo_reference=facility_photo["photo_reference"],
+                              html_attributions=facility_photo["html_attributions"])
+            else:
+                photo = NO_PHOTO
+
+            buttons = MessengerUtil.create_buttons(DEFAULT_WEBSITE, payload)
+            element = MessengerUtil.create_elements(title=name,
+                                                    place_id=place_id,
+                                                    facility_type=facility_type,
+                                                    photos=[photo],
+                                                    buttons=buttons)
+            elements.append(element[0])
+
+        facilities_template = MessengerUtil.create_template_message(template_type="generic",
+                                                                    elements=elements)
+
+        if max_facilities == 1:
+            present_facilities_message = "Here is a {} near you:".format(facility_type)
         else:
-            message = "Here are {} {}s near you:".format(len(buttons),
-                                                         button_name)
+            present_facilities_message = "Here are {} {}s near you:".format(max_facilities,
+                                                                            facility_type)
 
-        # TODO: update rasa core version for configurable `button_type`
-        dispatcher.utter_message(text=message, buttons=buttons)
+        dispatcher.utter_message(present_facilities_message)
+        dispatcher.utter_message(json_message=facilities_template)
         return []
-
 
 class DetailsForm(FormAction):
     """This form class retrieves the address of the user's
@@ -457,8 +484,7 @@ class DetailsForm(FormAction):
         dispatcher.utter_message(message)
         return []
 
-
-class DetailsAction(Action):
+class GetDetailsAction(Action):
     def name(self) -> Text:
         return "details_action"
 
@@ -486,7 +512,6 @@ class DetailsAction(Action):
 
             dispatcher.utter_message("Sorry I couldn't find details for {}".format(facility_name))
             return [SlotSet("facility_details", "No details")]
-
 
 class PhotosAction(Action):
 
@@ -521,7 +546,7 @@ class PhotosAction(Action):
         message = "Here are some photos for {} in {}".format(facility_name, location)
         dispatcher.utter_message(message)
 
-        buttons = MessengerUtil.create_buttons(website=facility_details["website"])
+        buttons=[]
         elements = MessengerUtil.create_elements(title=facility_details["name"],
                                                  place_id=place_id,
                                                  facility_type=facility_type,
@@ -533,11 +558,266 @@ class PhotosAction(Action):
         dispatcher.utter_message(json_message=template)
         return []
 
+class PriceLevelAction(Action):
+    DICT = {
+        "name": "price_level",
+        "ui_name": "price level",
+        "messages": {
+            4: "This place is considered very expensive",
+            3: "Expensive prices here",
+            2: "Moderate pricing for this place",
+            1: "This place is rather inexpensive",
+            0: "Looks like this place is free",
+            -1: "Seems like no information could be found for the price level",
+        },
+        "emoji": EMOJIES["money"],
+    }
 
-class ProvideDetailsAction(Action):
     def name(self) -> Text:
-        return "provide_details_action"
+        return "price_level_action"
 
+    def run(self,
+            dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List:
+        facility_details = tracker.get_slot("facility_details")
+        price_level = PriceLevelAction.DICT["name"]
+        if price_level in facility_details:
+            value = facility_details[price_level]
+            message = PriceLevelAction.DICT["emoji"] + " " + \
+                      PriceLevelAction.DICT["messages"][value]
+        else:
+            message = PriceLevelAction.DICT["messages"][-1]
+        utter_message(message)
+        return []
+
+class AtmosphereAction(Action):
+    DICT = {
+        "name": "rating",
+        "ui_name": "rating",
+        "messages": {
+            4: "Check this high rating out :)",
+            3: "This is a medium rated facility",
+            1: "The rating is",
+            -1: "Oops! Couldn't find information about the rating :/",
+        },
+        "emoji": EMOJIES["star"],
+    }
+
+    def name(self) -> Text:
+        return "atmosphere_action"
+
+    def run(self,
+            dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List:
+
+        facility_details = tracker.get_slot("facility_details")
+        facility_type = tracker.get_slot("facility_type")
+        rating = AtmosphereAction.DICT["name"]
+        if rating in facility_details:
+            value = facility_details[rating]
+            message = AtmosphereAction.DICT["emoji"] + " " + \
+                      AtmosphereAction.DICT["messages"][math.floor(value)]
+        else:
+            message = AtmosphereAction.DICT["messages"][-1]
+        utter_message(message)
+        return []
+
+class PhoneAction(Action):
+    DICT = {
+        "name": "international_phone_number",
+        "ui_name": "phone",
+        "messages": {
+            3: "This is the phone number for this place {}",
+            2: "Call them to see what's new {}",
+            1: "Reach out on the phone {}",
+            -1: "Yikes! Those guys don't have a phone maybe? " + EMOJIES["sweat_smile"],
+        },
+        "emoji": EMOJIES["phone"],
+    }
+
+    def name(self) -> Text:
+        return "phone_action"
+
+    def run(self,
+            dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List:
+
+        facility_details = tracker.get_slot("facility_details")
+        facility_type = tracker.get_slot("facility_type")
+        phone = PhoneAction.DICT["name"]
+        if phone in facility_details[phone]:
+            value = facility_details[phone]
+            msg_pos = random.randint(1, 3)
+            message = PhoneAction.DICT["emoji"] + " " + \
+                      PhoneAction.DICT["messages"][msg_pos]
+        else:
+            message = PhoneAction.DICT["messages"][-1]
+            dispatcher.utter_message(message)
+        return []
+
+class WebsiteAction(Action):
+    DICT = {
+        "name": "website",
+        "ui_name": "website",
+        "messages": {
+            3: "See what they have to offer on their website {}",
+            2: "Check their website {}",
+            1: "You can find more details on {}",
+            -1: "Yikes! Those guys don't have a website maybe?" + EMOJIES["thinking_face"],
+        },
+        "emoji": EMOJIES["world"],
+    }
+
+    def name(self) -> Text:
+        return "website_action"
+
+    def run(self,
+            dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List:
+
+        facility_details = tracker.get_slot("facility_details")
+        facility_type = tracker.get_slot("facility_type")
+        website = WebsiteAction.DICT["name"]
+        if website in facility_details[website]:
+            value = facility_details[phone]
+            msg_pos = random.randint(1, 3)
+            message = PhoneAction.DICT["emoji"] + " " + \
+                      PhoneAction.DICT["messages"][msg_pos]
+        else:
+            message = PhoneAction.DICT["messages"][-1]
+        dispatcher.utter_message(message)
+        return []
+
+class AddressAction(Action):
+
+    DICT = {
+        "name": "address",
+        "ui_name": "address",
+        "messages": {
+            3: "This is how you get there {}",
+            2: "This is where the place is located {}",
+            1: "Here's the address {}",
+            -1: "I couldn't find the address for this place :/",
+        },
+        "emoji": EMOJIES["pin"],
+    },
+
+    def name(self) -> Text:
+        return "address_action"
+
+    def run(self,
+            dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List:
+
+        facility_details = tracker.get_slot("facility_details")
+        facility_type = tracker.get_slot("facility_type")
+        address = AddressAction.DICT["name"]
+        if address in facility_details[address]:
+            value = facility_details[address]
+            msg_pos = random.randint(1, 3)
+            message = AddressAction.DICT["emoji"] + " " + \
+                      AddressAction.DICT["messages"][msg_pos]
+        else:
+            message = AddressAction.DICT["messages"][-1]
+        dispatcher.utter_message(message)
+        return []
+
+class ScheduleAction(Action):
+    WEEKDAY_DICT = {
+        "name": "weekday_text",
+        "ui_name": "opening hours",
+        "messages": {
+            3: "This are the opening hours for this place {}",
+            2: "Check the programme {}",
+            1: "The place is open between these hours {}",
+            -1: "I wasn't able to find their programme, sorry :(",
+        },
+        "emoji": EMOJIES["calendar"],
+    }
+
+    OPENNOW_DICT = {
+        "name": "open_now",
+        "name": "open now",
+        "messages" {
+            2: "The place is open now! ;)",
+            1: "Seems they are closed now... :/",
+            -1: "I don't know wether they are open or not. Missed maths class " + EMOJIES["laughing_face"],
+        }
+    }
+
+    def name(self) -> Text:
+        return "schedule_action"
+
+    def run(self,
+            dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List:
+
+        facility_details = tracker.get_slot("facility_details")
+        facility_type = tracker.get_slot("facility_type")
+        weekday = ScheduleAction.WEEKDAY_DICT["name"]
+        if weekday in facility_details["opening_hours"]:
+            value = facility_details["opening_hours"][weekday]
+            msg_pos = random.randint(1, 3)
+            message = ScheduleAction.WEEKDAY_DICT["emoji"] + " " + \
+                      ScheduleAction.WEEKDAY_DICT["messages"][msg_pos]
+        else:
+            message = ScheduleAction.WEEKDAY_DICT["messages"][-1]
+
+        dispatcher.utter_message(message)
+
+        open_now = ScheduleAction.OPENNOW_DICT["name"]
+        if open_now in facility_details["opening_hours"]:
+            value = facility_details["opening_hours"][open_now]
+            msg_pos = random.randint(1, 2)
+            message = ScheduleAction.OPENNOW_DICT["messages"][msg_pos]
+        else:
+            message = ScheduleAction.OPENNOW_DICT["messages"][-1]
+
+        dispatcher.utter_message(message)
+        return []
+
+class MoreResultsAction(Action):
+    def name(self) -> Text:
+        return "more_results_action"
+
+    def run(self,
+            dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List:
+
+        facility_details = tracker.get_slot("facility_details")
+        facility_type = tracker.get_slot("facility_type")
+        message = "This feature is currently under development. :/"
+        dispatcher.utter_message(message)
+        return []
+
+class HelpAction(Action):
+    def name(self) -> Text:
+        return "help_action"
+
+    def run(self,
+            dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List:
+
+        facility_details = tracker.get_slot("facility_details")
+        facility_type = tracker.get_slot("facility_type")
+        message = "Here to help. First, you can choose a {}. After that I can \
+                   show you more details like price level, address, rating, \
+                   phone, website, you just have to ask. ;) If I ever get \
+                   stuck, restart me by typing 'restart'."
+        dispatcher.utter_message(message)
+        return []
+
+class RestartAction(Action):
+    def name(self) -> Text:
+        return "price_level_action"
 
     def run(self,
             dispatcher: CollectingDispatcher,
@@ -547,42 +827,11 @@ class ProvideDetailsAction(Action):
         facility_details = tracker.get_slot("facility_details")
         facility_type = tracker.get_slot("facility_type")
 
-        rate_message = "The price level is {}/5 and the rating is {}".format(facility_details["price_level"],
-                                                                           facility_details["rating"])
-
-        address_message = "The address is {}".format(facility_details["address"])
-        phone_message = "You can call {} at {}".format(facility_details["name"],
-                                                       facility_details["international_phone_number"])
-
-        website_message = "Find out more details about the {} at {}".format(facility_type,
-                                                                            facility_details["website"])
-
-        weekday_text = ""
-        for day in facility_details["opening_hours"]["weekday_text"]:
-            weekday_text += day + "\n"
-
-        open_hours_message = "The program is\n{}".format(weekday_text)
-
-        if facility_details["opening_hours"]["open_now"] is False:
-            open_now_message = "And the {} is not open now :(".format(facility_type)
-        elif facility_details["opening_hours"]["open_now"] is True:
-            open_now_message = "And the {} is open now ;)".format(facility_type)
-
-        dispatcher.utter_message(rate_message)
-        dispatcher.utter_message(address_message)
-        dispatcher.utter_message(phone_message)
-        dispatcher.utter_message(website_message)
-        dispatcher.utter_message(open_hours_message)
-        dispatcher.utter_message(open_now_message)
-
-
-class ActionRestarted(Action):
-    def name(self):
-        return 'action_restarted'
-    def run(self, dispatcher, tracker, domain):
+        message = "Ok, I am now restarting"
+        dispatcher.utter_message()
         return[Restarted()]
 
-class ActionSlotReset(Action):
+class SlotsResetAction(Action):
     def name(self):
         return 'action_slot_reset'
     def run(self, dispatcher, tracker, domain):

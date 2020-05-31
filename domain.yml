@@ -1,17 +1,29 @@
 actions:
-- details_action
-- facility_action
-- find_facility_types
-- provide_details_action
-- utter_ask_place_id
-- utter_ask_facility_type
-- utter_ask_location
-- utter_goodbye
+- get_facility_type_action
+- find_facilities_action
+- get_details_action
+- photos_action
+- price_level_action
+- atmosphere_action
+- phone_action
+- website_action
+- address_action
+- schedule_action
+- more_results_action
+- help_action
+- restart_action
+- slots_reset_action
+
+- utter_init
 - utter_greet
 - utter_noworries
-- photos_action
-- action_slot_reset
-- action_restarted
+- utter_goodbye
+- utter_out_of_scope
+- utter_ask_facility_type
+- utter_ask_location
+- utter_ask_place_id
+- utter_ask_details
+
 entities:
 - place_id
 - facility_type
@@ -21,20 +33,49 @@ forms:
 - details_form
 - facility_form
 intents:
-- search_provider
-- inform
-- greet
-- goodbye
 - affirm
 - deny
+- out_of_scope
+- greet
+- goodbye
+- inform
+- search_provider
+- ask_price
+- ask_atmosphere
+- ask_phone
+- ask_website
+- ask_address
+- ask_schedule
+- ask_help
+- more_results
+- restart
+- thanks
 - mood_great
 - mood_unhappy
-- thanks
-- out_of_scope
+
 responses:
+  utter_init:
+  - text: Hey there! :) I will help you find the best place to eat, drink or have
+          a coffee. I am still under development so please type "restart" if
+          something wrong comes up. Also, if you get stuck, ask me for help by
+          typing "help". Let's get started!
+  utter_greet:
+  - text: What are you looking for :D?
+  - text: :D Please choose one of the following options
+  - text: :D What can I help you with today?
+  utter_noworries:
+  - text: My pleasure!
+  - text: You are welcome!
+  utter_goodbye:
+  - text: Talk to you later! :)
+  - text: Have a good day! :D
+  - text: Until next time! :D
+  utter_out_of_scope:
+  - text: I didn't catch that. What do you mean?
+
   utter_ask_place_id:
   - text: Which {facility_type} would you like?
-  - text: Oops! I still need the {facility_type} id to find its address.
+  - text: Oops! I still need the {facility_type} of your choice to find its address.
   utter_ask_facility_type:
   - text: Should I search for a restaurant, bar or a cafe?
   utter_ask_location:
@@ -43,32 +84,22 @@ responses:
   - text: Please provide your city name, area or zip code to help me search for {facility_type}s.
   - text: Please enter your area or city name in order to find local providers.
   - text: One more thing. Where would you like to search for {facility_type}s?
-  utter_goodbye:
-  - text: Talk to you later! :)
-  - text: Have a good day! :D
-  - text: Until next time! :D
-  utter_greet:
-  - text: Hi! :D What are you looking for?
-  - text: Hey there! :D Please choose one of the following options
-  - text: Hello! :D What can I help you with today?
-  utter_noworries:
-  - text: My pleasure!
-  - text: You are welcome!
+  utter_ask_details:
+  - text: Can you select a restaurant first? Press on more details
+
 session_config:
   carry_over_slots_to_new_session: true
   session_expiration_time: 60
 slots:
-  place_id:
-    type: unfeaturized
-  facility_name:
-    type: unfeaturized
   facility_type:
     type: unfeaturized
   location:
     type: unfeaturized
-  facility_details:
+  place_id:
     type: unfeaturized
-  facility_photos:
+  facility_name:
+    type: unfeaturized
+  facility_details:
     type: unfeaturized
   requested_slot:
     type: unfeaturized
