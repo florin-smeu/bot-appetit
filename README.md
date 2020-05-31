@@ -1,4 +1,4 @@
-![logo](https://drive.google.com/uc?export=view&id=15t8rGSUhc0_IaCbjJadCGgDPAz_NVt8B)
+![logo](https://drive.google.com/uc?export=view&id=11Q_QjS40e-Z_WNNVC5Jn0jBwgrleiIAB)
 
 ### bot-appetit
 
