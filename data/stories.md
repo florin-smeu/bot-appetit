@@ -41,7 +41,12 @@
     - get_details_action
     - slot{"facility_details": "foo_details"}
     - photos_action
+    - price_level_action
+    - atmosphere_action
+    - phone_action
+    - website_action
     - address_action
+    - schedule
     - slots_reset_action
     - restart_action
 

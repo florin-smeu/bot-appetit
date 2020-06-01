@@ -498,6 +498,7 @@ class GetDetailsAction(Action):
         location = tracker.get_slot("location")
         facility_name = tracker.get_slot("facility_name")
 
+        place_id = "ChIJIYW2hE3_sUARwjQv-T-KZh0"
         details = Details(place_id)
         success = details.retrieve()
 
@@ -558,21 +559,22 @@ class PhotosAction(Action):
         dispatcher.utter_message(json_message=template)
         return []
 
-class PriceLevelAction(Action):
-    DICT = {
-        "name": "price_level",
-        "ui_name": "price level",
-        "messages": {
-            4: "This place is considered very expensive",
-            3: "Expensive prices here",
-            2: "Moderate pricing for this place",
-            1: "This place is rather inexpensive",
-            0: "Looks like this place is free",
-            -1: "Seems like no information could be found for the price level",
-        },
-        "emoji": EMOJIES["money"],
-    }
+PRICELEVEL_DICT = {
+    "name": "price_level",
+    "ui_name": "price level",
+    "messages": {
+        4: "This place is considered very expensive",
+        3: "Expensive prices here",
+        2: "Moderate pricing for this place",
+        1: "This place is rather inexpensive",
+        0: "Looks like this place is free",
+        -1: "Seems like no information could be found for the price level",
+    },
+    "emoji": EMOJIES["money"],
+}
 
+
+class PriceLevelAction(Action):
     def name(self) -> Text:
         return "price_level_action"
 
@@ -581,30 +583,30 @@ class PriceLevelAction(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List:
         facility_details = tracker.get_slot("facility_details")
-        price_level = PriceLevelAction.DICT["name"]
+        price_level = PRICELEVEL_DICT.get("name")
         if price_level in facility_details:
             value = facility_details[price_level]
-            message = PriceLevelAction.DICT["emoji"] + " " + \
-                      PriceLevelAction.DICT["messages"][value]
+            message = PRICELEVEL_DICT.get("emoji") + " " + \
+                      PRICELEVEL_DICT.get("messages")[value]
         else:
-            message = PriceLevelAction.DICT["messages"][-1]
+            message = PRICELEVEL_DICT.get("messages")[-1]
         utter_message(message)
         return []
 
-class AtmosphereAction(Action):
-    DICT = {
-        "name": "rating",
-        "ui_name": "rating",
-        "messages": {
-            4: "Check this high rating out :)",
-            3: "This is a medium rated facility",
-            2: "The rating is",
-            1: "The rating is",
-            -1: "Oops! Couldn't find information about the rating :/",
-        },
-        "emoji": EMOJIES["star"],
-    }
+ATMOSPHERE_DICT = {
+    "name": "rating",
+    "ui_name": "rating",
+    "messages": {
+        4: "Check this high rating out :)",
+        3: "This is a medium rated facility",
+        2: "The rating is",
+        1: "The rating is",
+        -1: "Oops! Couldn't find information about the rating :/",
+    },
+    "emoji": EMOJIES["star"],
+}
 
+class AtmosphereAction(Action):
     def name(self) -> Text:
         return "atmosphere_action"
 
@@ -615,29 +617,29 @@ class AtmosphereAction(Action):
 
         facility_details = tracker.get_slot("facility_details")
         facility_type = tracker.get_slot("facility_type")
-        rating = AtmosphereAction.DICT["name"]
+        rating = ATMOSPHERE_DICT.get("name")
         if rating in facility_details:
             value = facility_details[rating]
-            message = AtmosphereAction.DICT["emoji"] + " " + \
-                      AtmosphereAction.DICT["messages"][math.floor(value)]
+            message = ATMOSPHERE_DICT.get("emoji") + " " + \
+                      ATMOSPHERE_DICT.get("messages")[math.floor(value)]
         else:
-            message = AtmosphereAction.DICT["messages"][-1]
+            message = ATMOSPHERE_DICT.get("messages")[-1]
         utter_message(message)
         return []
 
-class PhoneAction(Action):
-    DICT = {
-        "name": "international_phone_number",
-        "ui_name": "phone",
-        "messages": {
-            3: "This is the phone number for this place {}",
-            2: "Call them to see what's new {}",
-            1: "Reach out on the phone {}",
-            -1: "Yikes! Those guys don't have a phone maybe? " + EMOJIES["sweat_smile"],
-        },
-        "emoji": EMOJIES["phone"],
-    }
+PHONE_DICT = {
+    "name": "international_phone_number",
+    "ui_name": "phone",
+    "messages": {
+        3: "This is the phone number for this place {}",
+        2: "Call them to see what's new {}",
+        1: "Reach out on the phone {}",
+        -1: "Yikes! Those guys don't have a phone maybe? " + EMOJIES["sweat_smile"],
+    },
+    "emoji": EMOJIES["phone"],
+}
 
+class PhoneAction(Action):
     def name(self) -> Text:
         return "phone_action"
 
@@ -648,29 +650,31 @@ class PhoneAction(Action):
 
         facility_details = tracker.get_slot("facility_details")
         facility_type = tracker.get_slot("facility_type")
-        phone = PhoneAction.DICT["name"]
-        if phone in facility_details[phone]:
+        phone = PHONE_DICT.get("name")
+        if phone in facility_details:
             value = facility_details[phone]
             msg_pos = random.randint(1, 3)
-            message = PhoneAction.DICT["emoji"] + " " + \
-                      PhoneAction.DICT["messages"][msg_pos].format(value)
+            message = PHONE_DICT.get("emoji") + " " + \
+                      PHONE_DICT.get("messages")[msg_pos].format(value)
         else:
-            message = PhoneAction.DICT["messages"][-1]
+            message = PHONE_DICT.get("messages")[-1]
             dispatcher.utter_message(message)
         return []
 
+WEBSITE_DICT = {
+    "name": "website",
+    "ui_name": "website",
+    "messages": {
+        3: "See what they have to offer on their website {}",
+        2: "Check their website {}",
+        1: "You can find more details on {}",
+        -1: "Yikes! Those guys don't have a website maybe?" + EMOJIES["thinking_face"],
+    },
+    "emoji": EMOJIES["world"],
+}
+
 class WebsiteAction(Action):
-    DICT = {
-        "name": "website",
-        "ui_name": "website",
-        "messages": {
-            3: "See what they have to offer on their website {}",
-            2: "Check their website {}",
-            1: "You can find more details on {}",
-            -1: "Yikes! Those guys don't have a website maybe?" + EMOJIES["thinking_face"],
-        },
-        "emoji": EMOJIES["world"],
-    }
+
 
     def name(self) -> Text:
         return "website_action"
@@ -682,31 +686,30 @@ class WebsiteAction(Action):
 
         facility_details = tracker.get_slot("facility_details")
         facility_type = tracker.get_slot("facility_type")
-        website = WebsiteAction.DICT["name"]
-        if website in facility_details[website]:
+        website = WEBSITE_DICT.get("name")
+        if website in facility_details:
             value = facility_details[phone]
             msg_pos = random.randint(1, 3)
-            message = PhoneAction.DICT["emoji"] + " " + \
-                      PhoneAction.DICT["messages"][msg_pos].format(value)
+            message = WEBSITE_DICT.get("emoji") + " " + \
+                      WEBSITE_DICT.get("messages")[msg_pos].format(value)
         else:
-            message = PhoneAction.DICT["messages"][-1]
+            message = WEBSITE_DICT.get("messages")[-1]
         dispatcher.utter_message(message)
         return []
 
-class AddressAction(Action):
-
-    DICT = {
-        "name": "address",
-        "ui_name": "address",
-        "messages": {
-            3: "This is how you get there {}",
-            2: "This is where the place is located {}",
-            1: "Here's the address {}",
-            -1: "I couldn't find the address for this place :/",
-        },
-        "emoji": EMOJIES["pin"],
+ADDRESS_DICT = {
+    "name": "address",
+    "ui_name": "address",
+    "messages": {
+        3: "This is how you get there {}",
+        2: "This is where the place is located {}",
+        1: "Here's the address {}",
+        -1: "I couldn't find the address for this place :/",
     },
+    "emoji": EMOJIES["pin"],
+}
 
+class AddressAction(Action):
     def name(self) -> Text:
         return "address_action"
 
@@ -717,40 +720,42 @@ class AddressAction(Action):
 
         facility_details = tracker.get_slot("facility_details")
         facility_type = tracker.get_slot("facility_type")
-        address = AddressAction.DICT["name"]
-        if address in facility_details[address]:
+        address = ADDRESS_DICT.get("name")
+        print(address)
+        print(facility_details["address"])
+        if address in facility_details:
             value = facility_details[address]
             msg_pos = random.randint(1, 3)
-            message = AddressAction.DICT["emoji"] + " " + \
-                      AddressAction.DICT["messages"][msg_pos].format(value)
+            message = ADDRESS_DICT.get("emoji") + " " + \
+                      ADDRESS_DICT.get("messages")[msg_pos].format(value)
         else:
-            message = AddressAction.DICT["messages"][-1]
+            message = ADDRESS_DICT.get("messages")[-1]
         dispatcher.utter_message(message)
         return []
 
+WEEKDAY_DICT = {
+    "name": "weekday_text",
+    "ui_name": "opening hours",
+    "messages": {
+        3: "This are the opening hours for this place {}",
+        2: "Check the programme {}",
+        1: "The place is open between these hours {}",
+        -1: "I wasn't able to find their programme, sorry :(",
+    },
+    "emoji": EMOJIES["calendar"],
+}
+
+OPENNOW_DICT = {
+    "name": "open_now",
+    "name": "open now",
+    "messages": {
+        2: "The place is open now! ;)",
+        1: "Seems they are closed now... :/",
+        -1: "I don't know wether they are open or not. Missed maths class " + EMOJIES["laughing_face"],
+    }
+}
+
 class ScheduleAction(Action):
-    WEEKDAY_DICT = {
-        "name": "weekday_text",
-        "ui_name": "opening hours",
-        "messages": {
-            3: "This are the opening hours for this place {}",
-            2: "Check the programme {}",
-            1: "The place is open between these hours {}",
-            -1: "I wasn't able to find their programme, sorry :(",
-        },
-        "emoji": EMOJIES["calendar"],
-    }
-
-    OPENNOW_DICT = {
-        "name": "open_now",
-        "name": "open now",
-        "messages": {
-            2: "The place is open now! ;)",
-            1: "Seems they are closed now... :/",
-            -1: "I don't know wether they are open or not. Missed maths class " + EMOJIES["laughing_face"],
-        }
-    }
-
     def name(self) -> Text:
         return "schedule_action"
 
@@ -761,24 +766,24 @@ class ScheduleAction(Action):
 
         facility_details = tracker.get_slot("facility_details")
         facility_type = tracker.get_slot("facility_type")
-        weekday = ScheduleAction.WEEKDAY_DICT["name"]
+        weekday = WEEKDAY_DICT.get("name")
         if weekday in facility_details["opening_hours"]:
             value = facility_details["opening_hours"][weekday]
             msg_pos = random.randint(1, 3)
-            message = ScheduleAction.WEEKDAY_DICT["emoji"] + " " + \
-                      ScheduleAction.WEEKDAY_DICT["messages"][msg_pos].format(value)
+            message = WEEKDAY_DICT.get("emoji") + " " + \
+                      WEEKDAY_DICT.get("messages")[msg_pos].format(value)
         else:
-            message = ScheduleAction.WEEKDAY_DICT["messages"][-1]
+            message = WEEKDAY_DICT.get("messages")[-1]
 
         dispatcher.utter_message(message)
 
-        open_now = ScheduleAction.OPENNOW_DICT["name"]
+        open_now = OPENNOW_DICT.get("name")
         if open_now in facility_details["opening_hours"]:
             value = facility_details["opening_hours"][open_now]
             msg_pos = random.randint(1, 2)
-            message = ScheduleAction.OPENNOW_DICT["messages"][msg_pos]
+            message = OPENNOW_DICT.get("messages")[msg_pos]
         else:
-            message = ScheduleAction.OPENNOW_DICT["messages"][-1]
+            message = OPENNOW_DICT.get("messages")[-1]
 
         dispatcher.utter_message(message)
         return []
