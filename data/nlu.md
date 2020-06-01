@@ -303,15 +303,18 @@
 - You got a problem
 
 ## intent:more_results
-- Can you show me other [restaurant](facility_type)s?
-- Can you show me other [cafe](facility_type)s?
-- Can you show me other [bar](facility_type)s?
+- Can you show me other [restaurant](facility_type)?
+- Can you show me other [cafe](facility_type)?
+- Can you show me other [bar](facility_type)?
 - More results
 - Show me other
 - Give me other results
-- Can you show me more [restaurant](facility_type)s?
-- Can you show me more [bar](facility_type)s?
-- Can you show me more [cafe](facility_type)s?
+- Can you show me more [restaurants]{"entity": "facility_type", "value": "restaurant")
+- Can you show me more [bars]{"entity": "facility_type", "value": "bar")
+- Can you show me more [cafes]{"entity": "facility_type", "value": "cafe")
+- I want another [restaurant](facility_type)
+- I want another [cafe](facility_type)
+- I want another [bar](facility_type)
 
 ## intent:restart
 - restart the conversation

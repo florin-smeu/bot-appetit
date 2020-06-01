@@ -291,7 +291,7 @@ class GetFacilityTypeAction(Action):
     def name(self) -> Text:
         """Unique identifier of the action"""
 
-        return "find_facility_types"
+        return "get_facility_type_action"
 
     def run(self,
             dispatcher: CollectingDispatcher,
@@ -372,7 +372,7 @@ class FindFacilitiesAction(Action):
     def _find_facilities(query: Text, type: Text) -> List[Dict]:
         """Returns json of facilities matching the search criteria."""
 
-        full_path = FacilityAction._create_path(query, type)
+        full_path = FindFacilitiesAction._create_path(query, type)
 
         print("Full path:")
         print(full_path)
@@ -381,7 +381,7 @@ class FindFacilitiesAction(Action):
         return results['results']
 
     def name(self) -> Text:
-        return "facility_action"
+        return "find_facilities_action"
 
     def run(self,
             dispatcher: CollectingDispatcher,
@@ -391,8 +391,8 @@ class FindFacilitiesAction(Action):
         location = tracker.get_slot('location')
         facility_type = tracker.get_slot('facility_type')
 
-        results = FacilityAction._find_facilities(location, facility_type)
-        button_name = FacilityAction._resolve_name(FACILITY_TYPES, facility_type)
+        results = FindFacilitiesAction._find_facilities(location, facility_type)
+        button_name = FindFacilitiesAction._resolve_name(FACILITY_TYPES, facility_type)
         if len(results) == 0:
             dispatcher.utter_message(
                 "Sorry, we could not find a {} in {}.".format(button_name,
@@ -401,7 +401,7 @@ class FindFacilitiesAction(Action):
 
         rating_sorted_results = sorted(results, key=itemgetter('rating'), reverse=True)
 
-        max_facilities = min(FacilityAction.MAX_FACILITIES, len(rating_sorted_results))
+        max_facilities = min(FindFacilitiesAction.MAX_FACILITIES, len(rating_sorted_results))
         elements=[]
         for facility in rating_sorted_results[:max_facilities]:
             name = facility["name"]
@@ -486,7 +486,7 @@ class DetailsForm(FormAction):
 
 class GetDetailsAction(Action):
     def name(self) -> Text:
-        return "details_action"
+        return "get_details_action"
 
     def run(self,
             dispatcher: CollectingDispatcher,
@@ -598,6 +598,7 @@ class AtmosphereAction(Action):
         "messages": {
             4: "Check this high rating out :)",
             3: "This is a medium rated facility",
+            2: "The rating is",
             1: "The rating is",
             -1: "Oops! Couldn't find information about the rating :/",
         },
@@ -652,7 +653,7 @@ class PhoneAction(Action):
             value = facility_details[phone]
             msg_pos = random.randint(1, 3)
             message = PhoneAction.DICT["emoji"] + " " + \
-                      PhoneAction.DICT["messages"][msg_pos]
+                      PhoneAction.DICT["messages"][msg_pos].format(value)
         else:
             message = PhoneAction.DICT["messages"][-1]
             dispatcher.utter_message(message)
@@ -686,7 +687,7 @@ class WebsiteAction(Action):
             value = facility_details[phone]
             msg_pos = random.randint(1, 3)
             message = PhoneAction.DICT["emoji"] + " " + \
-                      PhoneAction.DICT["messages"][msg_pos]
+                      PhoneAction.DICT["messages"][msg_pos].format(value)
         else:
             message = PhoneAction.DICT["messages"][-1]
         dispatcher.utter_message(message)
@@ -721,7 +722,7 @@ class AddressAction(Action):
             value = facility_details[address]
             msg_pos = random.randint(1, 3)
             message = AddressAction.DICT["emoji"] + " " + \
-                      AddressAction.DICT["messages"][msg_pos]
+                      AddressAction.DICT["messages"][msg_pos].format(value)
         else:
             message = AddressAction.DICT["messages"][-1]
         dispatcher.utter_message(message)
@@ -743,7 +744,7 @@ class ScheduleAction(Action):
     OPENNOW_DICT = {
         "name": "open_now",
         "name": "open now",
-        "messages" {
+        "messages": {
             2: "The place is open now! ;)",
             1: "Seems they are closed now... :/",
             -1: "I don't know wether they are open or not. Missed maths class " + EMOJIES["laughing_face"],
@@ -765,7 +766,7 @@ class ScheduleAction(Action):
             value = facility_details["opening_hours"][weekday]
             msg_pos = random.randint(1, 3)
             message = ScheduleAction.WEEKDAY_DICT["emoji"] + " " + \
-                      ScheduleAction.WEEKDAY_DICT["messages"][msg_pos]
+                      ScheduleAction.WEEKDAY_DICT["messages"][msg_pos].format(value)
         else:
             message = ScheduleAction.WEEKDAY_DICT["messages"][-1]
 
@@ -817,7 +818,7 @@ class HelpAction(Action):
 
 class RestartAction(Action):
     def name(self) -> Text:
-        return "price_level_action"
+        return "restart_action"
 
     def run(self,
             dispatcher: CollectingDispatcher,
@@ -833,6 +834,6 @@ class RestartAction(Action):
 
 class SlotsResetAction(Action):
     def name(self):
-        return 'action_slot_reset'
+        return 'slots_reset_action'
     def run(self, dispatcher, tracker, domain):
         return[AllSlotsReset()]
