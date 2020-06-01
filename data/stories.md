@@ -46,7 +46,7 @@
     - phone_action
     - website_action
     - address_action
-    - schedule
+    - schedule_action
     - slots_reset_action
     - restart_action
 

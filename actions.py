@@ -498,7 +498,7 @@ class GetDetailsAction(Action):
         location = tracker.get_slot("location")
         facility_name = tracker.get_slot("facility_name")
 
-        place_id = "ChIJIYW2hE3_sUARwjQv-T-KZh0"
+        #place_id = "ChIJIYW2hE3_sUARwjQv-T-KZh0"
         details = Details(place_id)
         success = details.retrieve()
 
@@ -688,7 +688,7 @@ class WebsiteAction(Action):
         facility_type = tracker.get_slot("facility_type")
         website = WEBSITE_DICT.get("name")
         if website in facility_details:
-            value = facility_details[phone]
+            value = facility_details[website]
             msg_pos = random.randint(1, 3)
             message = WEBSITE_DICT.get("emoji") + " " + \
                       WEBSITE_DICT.get("messages")[msg_pos].format(value)
