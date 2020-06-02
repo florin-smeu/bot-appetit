@@ -400,7 +400,7 @@ class FindFacilitiesAction(Action):
             return []
 
         #rating_sorted_results = sorted(results, key=itemgetter('rating'), reverse=True)
-        
+
         max_facilities = min(FindFacilitiesAction.MAX_FACILITIES, len(results))
         elements=[]
         for facility in results[:max_facilities]:

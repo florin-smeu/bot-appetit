@@ -86,6 +86,10 @@ responses:
   - text: One more thing. Where would you like to search for a {facility_type}?
   utter_ask_details:
   - text: Could you choose a facility first?
+  utter_ask_correct_params:
+  - text: Should I search for a {facility_type} in {location}?
+  - text: Do you want to search for a {facility_type} in {location}?
+  - text: Do you want a {} in {}?
 
 session_config:
   carry_over_slots_to_new_session: false
