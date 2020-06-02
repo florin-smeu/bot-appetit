@@ -310,7 +310,7 @@ class GetFacilityTypeAction(Action):
                                       facility_type.get("emoji")),
                  "payload": payload})
 
-        dispatcher.utter_message(template="utter_greet", buttons=buttons)
+        dispatcher.utter_message(buttons=buttons)
         return []
 
 class FacilityForm(FormAction):
@@ -438,7 +438,26 @@ class FindFacilitiesAction(Action):
         dispatcher.utter_message(present_facilities_message)
         dispatcher.utter_message(json_message=facilities_template)
         return []
+        """
 
+        buttons = []
+        # limit number of results to 3 for clear presentation purposes
+        max_facilities = min(FindFacilitiesAction.MAX_FACILITIES, len(rating_sorted_results))
+        for r in rating_sorted_results[:3]:
+            name = r["name"]
+            place_id = r["place_id"]
+            payload = "/inform{\"place_id\":\"" + place_id + "\", \"facility_name\":\"" + name + "\"}"
+            buttons.append(
+                {"title": "{}".format(name), "payload": payload})
+        if len(buttons) == 1:
+            message = "Here is a {} near you:".format(button_name)
+        else:
+            message = "Here are {} {}s near you:".format(len(buttons),
+                                                         button_name)
+        dispatcher.utter_message(text=message, buttons=buttons)
+        return []
+        """
+        
 class DetailsForm(FormAction):
     """This form class retrieves the address of the user's
     eating facility choice to display it to the user."""
@@ -525,6 +544,11 @@ class PhotosAction(Action):
             domain: Dict[Text, Any]) -> List:
 
         facility_details = tracker.get_slot("facility_details")
+        if facility_details is None:
+            error_message = "You have to choose a facility first"
+            dispatcher.utter_message(error_message)
+            return []
+
         place_id = tracker.get_slot("place_id")
         location = tracker.get_slot("location")
         facility_name = tracker.get_slot("facility_name")
@@ -583,24 +607,31 @@ class PriceLevelAction(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List:
         facility_details = tracker.get_slot("facility_details")
+
+        if facility_details is None:
+            error_message = "You have to choose a facility first"
+            dispatcher.utter_message(error_message)
+            return []
+
         price_level = PRICELEVEL_DICT.get("name")
         if price_level in facility_details:
             value = facility_details[price_level]
-            message = PRICELEVEL_DICT.get("emoji") + " " + \
+            message = value * PRICELEVEL_DICT.get("emoji") + " " + \
                       PRICELEVEL_DICT.get("messages")[value]
         else:
             message = PRICELEVEL_DICT.get("messages")[-1]
-        utter_message(message)
+        dispatcher.utter_message(message)
         return []
 
 ATMOSPHERE_DICT = {
     "name": "rating",
     "ui_name": "rating",
     "messages": {
-        4: "Check this high rating out :)",
-        3: "This is a medium rated facility",
-        2: "The rating is",
-        1: "The rating is",
+        5: "Perfect rating\n{}",
+        4: "Check this high rating out\n{}",
+        3: "This is a medium rated facility\n{}",
+        2: "The rating is\n{}",
+        1: "The rating is\n{}",
         -1: "Oops! Couldn't find information about the rating :/",
     },
     "emoji": EMOJIES["star"],
@@ -616,24 +647,29 @@ class AtmosphereAction(Action):
             domain: Dict[Text, Any]) -> List:
 
         facility_details = tracker.get_slot("facility_details")
+        if facility_details is None:
+            error_message = "You have to choose a facility first"
+            dispatcher.utter_message(error_message)
+            return []
+
         facility_type = tracker.get_slot("facility_type")
         rating = ATMOSPHERE_DICT.get("name")
         if rating in facility_details:
             value = facility_details[rating]
-            message = ATMOSPHERE_DICT.get("emoji") + " " + \
-                      ATMOSPHERE_DICT.get("messages")[math.floor(value)]
+            message = round(value) * ATMOSPHERE_DICT.get("emoji") + " " + \
+                      ATMOSPHERE_DICT.get("messages")[math.floor(value)].format(value)
         else:
             message = ATMOSPHERE_DICT.get("messages")[-1]
-        utter_message(message)
+        dispatcher.utter_message(message)
         return []
 
 PHONE_DICT = {
     "name": "international_phone_number",
     "ui_name": "phone",
     "messages": {
-        3: "This is the phone number for this place {}",
-        2: "Call them to see what's new {}",
-        1: "Reach out on the phone {}",
+        3: "This is the phone number for this place\n{}",
+        2: "Call them to see what's new\n{}",
+        1: "Reach out on the phone\n{}",
         -1: "Yikes! Those guys don't have a phone maybe? " + EMOJIES["sweat_smile"],
     },
     "emoji": EMOJIES["phone"],
@@ -649,6 +685,11 @@ class PhoneAction(Action):
             domain: Dict[Text, Any]) -> List:
 
         facility_details = tracker.get_slot("facility_details")
+        if facility_details is None:
+            error_message = "You have to choose a facility first"
+            dispatcher.utter_message(error_message)
+            return []
+
         facility_type = tracker.get_slot("facility_type")
         phone = PHONE_DICT.get("name")
         if phone in facility_details:
@@ -658,16 +699,17 @@ class PhoneAction(Action):
                       PHONE_DICT.get("messages")[msg_pos].format(value)
         else:
             message = PHONE_DICT.get("messages")[-1]
-            dispatcher.utter_message(message)
+
+        dispatcher.utter_message(message)
         return []
 
 WEBSITE_DICT = {
     "name": "website",
     "ui_name": "website",
     "messages": {
-        3: "See what they have to offer on their website {}",
-        2: "Check their website {}",
-        1: "You can find more details on {}",
+        3: "See what they have to offer on their website\n{}",
+        2: "Check their website\n{}",
+        1: "You can find more details on\n{}",
         -1: "Yikes! Those guys don't have a website maybe?" + EMOJIES["thinking_face"],
     },
     "emoji": EMOJIES["world"],
@@ -685,6 +727,11 @@ class WebsiteAction(Action):
             domain: Dict[Text, Any]) -> List:
 
         facility_details = tracker.get_slot("facility_details")
+        if facility_details is None:
+            error_message = "You have to choose a facility first"
+            dispatcher.utter_message(error_message)
+            return []
+
         facility_type = tracker.get_slot("facility_type")
         website = WEBSITE_DICT.get("name")
         if website in facility_details:
@@ -701,9 +748,9 @@ ADDRESS_DICT = {
     "name": "address",
     "ui_name": "address",
     "messages": {
-        3: "This is how you get there {}",
-        2: "This is where the place is located {}",
-        1: "Here's the address {}",
+        3: "This is how you get there\n{}",
+        2: "This is where the place is located\n{}",
+        1: "Here's the address\n{}",
         -1: "I couldn't find the address for this place :/",
     },
     "emoji": EMOJIES["pin"],
@@ -719,6 +766,11 @@ class AddressAction(Action):
             domain: Dict[Text, Any]) -> List:
 
         facility_details = tracker.get_slot("facility_details")
+        if facility_details is None:
+            error_message = "You have to choose a facility first"
+            dispatcher.utter_message(error_message)
+            return []
+
         facility_type = tracker.get_slot("facility_type")
         address = ADDRESS_DICT.get("name")
         print(address)
@@ -737,9 +789,9 @@ WEEKDAY_DICT = {
     "name": "weekday_text",
     "ui_name": "opening hours",
     "messages": {
-        3: "This are the opening hours for this place {}",
-        2: "Check the programme {}",
-        1: "The place is open between these hours {}",
+        3: "This are the opening hours for this place\n{}",
+        2: "Check the programme\n{}",
+        1: "The place is open between these hours\n{}",
         -1: "I wasn't able to find their programme, sorry :(",
     },
     "emoji": EMOJIES["calendar"],
@@ -747,11 +799,11 @@ WEEKDAY_DICT = {
 
 OPENNOW_DICT = {
     "name": "open_now",
-    "name": "open now",
+    "ui_name": "open now",
     "messages": {
         2: "The place is open now! ;)",
         1: "Seems they are closed now... :/",
-        -1: "I don't know wether they are open or not. Missed maths class " + EMOJIES["laughing_face"],
+        -1: "I don't know whether they are open or not. Missed maths class " + EMOJIES["laughing_face"],
     }
 }
 
@@ -765,13 +817,21 @@ class ScheduleAction(Action):
             domain: Dict[Text, Any]) -> List:
 
         facility_details = tracker.get_slot("facility_details")
+        if facility_details is None:
+            error_message = "You have to choose a facility first"
+            dispatcher.utter_message(error_message)
+            return []
+
         facility_type = tracker.get_slot("facility_type")
         weekday = WEEKDAY_DICT.get("name")
         if weekday in facility_details["opening_hours"]:
             value = facility_details["opening_hours"][weekday]
+            weekday_text = ""
+            for day in value:
+                weekday_text += day + "\n"
             msg_pos = random.randint(1, 3)
             message = WEEKDAY_DICT.get("emoji") + " " + \
-                      WEEKDAY_DICT.get("messages")[msg_pos].format(value)
+                      WEEKDAY_DICT.get("messages")[msg_pos].format(weekday_text)
         else:
             message = WEEKDAY_DICT.get("messages")[-1]
 
@@ -780,8 +840,10 @@ class ScheduleAction(Action):
         open_now = OPENNOW_DICT.get("name")
         if open_now in facility_details["opening_hours"]:
             value = facility_details["opening_hours"][open_now]
-            msg_pos = random.randint(1, 2)
-            message = OPENNOW_DICT.get("messages")[msg_pos]
+            if value is True:
+                message = OPENNOW_DICT.get("messages")[2]
+            else:
+                message = OPENNOW_DICT.get("messages")[1]
         else:
             message = OPENNOW_DICT.get("messages")[-1]
 
@@ -797,8 +859,9 @@ class MoreResultsAction(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List:
 
-        facility_details = tracker.get_slot("facility_details")
-        facility_type = tracker.get_slot("facility_type")
+        #facility_details = tracker.get_slot("facility_details")
+
+        #facility_type = tracker.get_slot("facility_type")
         message = "This feature is currently under development. :/"
         dispatcher.utter_message(message)
         return []
@@ -812,33 +875,18 @@ class HelpAction(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List:
 
-        facility_details = tracker.get_slot("facility_details")
-        facility_type = tracker.get_slot("facility_type")
-        message = "Here to help. First, you can choose a {}. After that I can \
+        message = "Here to help. First, you can choose a facility. After that I can \
                    show you more details like price level, address, rating, \
                    phone, website, you just have to ask. ;) If I ever get \
                    stuck, restart me by typing 'restart'."
         dispatcher.utter_message(message)
         return []
 
-class RestartAction(Action):
+class ActionRestart(Action):
     def name(self) -> Text:
-        return "restart_action"
+        return "action_restart"
 
-    def run(self,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List:
-
-        facility_details = tracker.get_slot("facility_details")
-        facility_type = tracker.get_slot("facility_type")
-
-        message = "Ok, I am now restarting"
-        dispatcher.utter_message()
-        return[Restarted()]
-
-class SlotsResetAction(Action):
-    def name(self):
-        return 'slots_reset_action'
     def run(self, dispatcher, tracker, domain):
-        return[AllSlotsReset()]
+        message = "Ok, I am now restarting"
+        dispatcher.utter_message(message)
+        return[AllSlotsReset(), Restarted()]

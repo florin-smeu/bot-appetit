@@ -11,8 +11,7 @@ actions:
 - schedule_action
 - more_results_action
 - help_action
-- restart_action
-- slots_reset_action
+- action_restart
 
 - utter_init
 - utter_greet
@@ -35,21 +34,22 @@ forms:
 intents:
 - affirm
 - deny
-- out_of_scope
+- out_of_scope: {triggers: utter_out_of_scope}
 - greet
-- goodbye
+- goodbye: {triggers: utter_goodbye}
 - inform
 - search_provider
-- ask_price
-- ask_atmosphere
-- ask_phone
-- ask_website
-- ask_address
-- ask_schedule
-- ask_help
-- more_results
-- restart
-- thanks
+- ask_photos: {triggers: photos_action}
+- ask_price: {triggers: price_level_action}
+- ask_atmosphere: {triggers: atmosphere_action}
+- ask_phone: {triggers: phone_action}
+- ask_website: {triggers: website_action}
+- ask_address: {triggers: address_action}
+- ask_schedule: {triggers: schedule_action}
+- ask_help: {triggers: help_action}
+- more_results: {triggers: more_results_action}
+- restart: {triggers: action_restart}
+- thanks: {triggers: utter_noworries}
 - mood_great
 - mood_unhappy
 
@@ -60,7 +60,7 @@ responses:
           something wrong comes up. Also, if you get stuck, ask me for help by
           typing "help". Let's get started!
   utter_greet:
-  - text: What are you looking for :D?
+  - text: What are you looking for? :D
   - text: :D Please choose one of the following options
   - text: :D What can I help you with today?
   utter_noworries:
@@ -79,16 +79,16 @@ responses:
   utter_ask_facility_type:
   - text: Should I search for a restaurant, bar or a cafe?
   utter_ask_location:
-  - text: Great choice! Where should I search for {facility_type}s?
-  - text: Could you tell me where whe {facility_type} should be located?
-  - text: Please provide your city name, area or zip code to help me search for {facility_type}s.
+  - text: Great choice! Where should I search for a {facility_type}?
+  - text: Could you tell me where the {facility_type} should be located?
+  - text: Please provide your city name, area or zip code to help me search for a {facility_type}.
   - text: Please enter your area or city name in order to find local providers.
-  - text: One more thing. Where would you like to search for {facility_type}s?
+  - text: One more thing. Where would you like to search for a {facility_type}?
   utter_ask_details:
-  - text: Can you select a restaurant first? Press on more details
+  - text: Could you choose a facility first?
 
 session_config:
-  carry_over_slots_to_new_session: true
+  carry_over_slots_to_new_session: false
   session_expiration_time: 60
 slots:
   facility_type:

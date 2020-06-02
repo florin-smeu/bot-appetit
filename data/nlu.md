@@ -235,11 +235,22 @@
 - I need the address of [restaurant](facility_type) [Capsa](facility_name) in [Bucharest](location)
 - Can you tell me where is the [bar](facility_type) called [St Partick](facility_name) in [Bucharest](location)?
 
+## intent:ask_photos
+- Can you show me some photos?
+- photos
+- I want to see some photos
+- Give me photos
+- Show me some photos
+- Show me photos
+- Photos please
+- I want photos
+
 ## intent:ask_price
 - Is it pricy?
 - How much does it cost?
 - Cost?
 - Can you tell me more about the prices there?
+- price
 - How much money?
 - Is it expensive?
 - I need a cheap option
@@ -253,6 +264,8 @@
 - How is the [bar](facility_type)?
 - Can you show me some rating info?
 - How is this rated?
+- How is the rating?
+- rating
 - Is it a good [restaurant](facility_type)?
 - Is it a good [cafe](facility_type)?
 - Is it a good [bar](facility_type)?
@@ -291,7 +304,7 @@
 - Can I go there now?
 - Is it open?
 - Give me their schedule
-- I want to know wether they are open now
+- I want to know whether they are open now
 - Can you tell me if it's open now?
 - When can I go there?
 
