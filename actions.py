@@ -399,11 +399,11 @@ class FindFacilitiesAction(Action):
                                                               location.title()))
             return []
 
-        rating_sorted_results = sorted(results, key=itemgetter('rating'), reverse=True)
+        #rating_sorted_results = sorted(results, key=itemgetter('rating'), reverse=True)
 
-        max_facilities = min(FindFacilitiesAction.MAX_FACILITIES, len(rating_sorted_results))
+        max_facilities = min(FindFacilitiesAction.MAX_FACILITIES, len(results))
         elements=[]
-        for facility in rating_sorted_results[:max_facilities]:
+        for facility in results[:max_facilities]:
             name = facility["name"]
             place_id = facility["place_id"]
             payload = "/inform{\"place_id\":\"" + place_id + "\", \"facility_name\":\"" + name + "\"}"
