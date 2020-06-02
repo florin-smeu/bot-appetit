@@ -276,6 +276,8 @@
 - Call
 - Phone number
 - Telephone
+- How can I call them?
+- What is the phone number?
 
 ## intent:ask_website
 - Do they have a website?
