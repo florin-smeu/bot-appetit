@@ -27,7 +27,9 @@
 * search_provider{"facility_type": "facility_foo"}
     - utter_ask_correct_params
 * deny
-    - action_restart
+    - utter_ask_location
+* inform{"location":"location_foo"}
+    - slot{"loaction": "location_foo"}
     - find_facilities_action
 * inform{"place_id": "ChIJ0wYwUjD_sUAR3d-lY7wFbg8", "facility_name": "Noeme - former GUXT"}
     - slot{"facility_name": "Noeme - former GUXT"}

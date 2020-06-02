@@ -79,10 +79,10 @@ responses:
   utter_ask_facility_type:
   - text: Should I search for a restaurant, bar or a cafe?
   utter_ask_location:
-  - text: Great choice! Where should I search for a {facility_type}?
+  - text: Where should I search for a {facility_type}?
   - text: Could you tell me where the {facility_type} should be located?
   - text: Please provide your city name, area or zip code to help me search for a {facility_type}.
-  - text: Please enter your area or city name in order to find local providers.
+  - text: Please enter your area or city name in order to find a local {facility_type}.
   - text: One more thing. Where would you like to search for a {facility_type}?
   utter_ask_details:
   - text: Could you choose a facility first?
