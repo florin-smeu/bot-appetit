@@ -1,7 +1,6 @@
 ## interactive_story
 * greet
     - utter_init
-    - utter_greet
     - get_facility_type_action
 * inform{"facility_type": "restaurant"}
     - slot{"facility_type": "restaurant"}

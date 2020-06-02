@@ -310,7 +310,7 @@ class GetFacilityTypeAction(Action):
                                       facility_type.get("emoji")),
                  "payload": payload})
 
-        dispatcher.utter_message(buttons=buttons)
+        dispatcher.utter_message(template="utter_greet", buttons=buttons)
         return []
 
 class FacilityForm(FormAction):
@@ -457,7 +457,7 @@ class FindFacilitiesAction(Action):
         dispatcher.utter_message(text=message, buttons=buttons)
         return []
         """
-        
+
 class DetailsForm(FormAction):
     """This form class retrieves the address of the user's
     eating facility choice to display it to the user."""
@@ -875,10 +875,10 @@ class HelpAction(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List:
 
-        message = "Here to help. First, you can choose a facility. After that I can \
-                   show you more details like price level, address, rating, \
-                   phone, website, you just have to ask. ;) If I ever get \
-                   stuck, restart me by typing 'restart'."
+        message = "Here to help. First, you can choose a facility. After " + \
+                  "that I  can show you more details like price level, " + \
+                  "address, rating, phone, website, you just have to ask. ;) " + \
+                  "If I ever get stuck, restart me by typing 'restart'."
         dispatcher.utter_message(message)
         return []
 
