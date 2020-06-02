@@ -400,7 +400,7 @@ class FindFacilitiesAction(Action):
             return []
 
         #rating_sorted_results = sorted(results, key=itemgetter('rating'), reverse=True)
-
+        
         max_facilities = min(FindFacilitiesAction.MAX_FACILITIES, len(results))
         elements=[]
         for facility in results[:max_facilities]:
@@ -442,8 +442,8 @@ class FindFacilitiesAction(Action):
 
         buttons = []
         # limit number of results to 3 for clear presentation purposes
-        max_facilities = min(FindFacilitiesAction.MAX_FACILITIES, len(rating_sorted_results))
-        for r in rating_sorted_results[:3]:
+        max_facilities = min(FindFacilitiesAction.MAX_FACILITIES, len(results))
+        for r in results[:3]:
             name = r["name"]
             place_id = r["place_id"]
             payload = "/inform{\"place_id\":\"" + place_id + "\", \"facility_name\":\"" + name + "\"}"
