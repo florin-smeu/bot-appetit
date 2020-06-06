@@ -54,7 +54,7 @@
 * deny
     - utter_ask_location
 * inform{"location":"location_foo"}
-    - slot{"loaction": "location_foo"}
+    - slot{"location": "location_foo"}
     - find_facilities_action
 * inform{"place_id": "ChIJ0wYwUjD_sUAR3d-lY7wFbg8", "facility_name": "Noeme - former GUXT"}
     - slot{"facility_name": "Noeme - former GUXT"}
@@ -81,7 +81,7 @@
 * deny
     - utter_ask_location
 * inform{"location":"location_foo"}
-    - slot{"loaction": "location_foo"}
+    - slot{"location": "location_foo"}
     - find_facilities_action
 * inform{"place_id": "ChIJ0wYwUjD_sUAR3d-lY7wFbg8", "facility_name": "Noeme - former GUXT"}
     - slot{"facility_name": "Noeme - former GUXT"}

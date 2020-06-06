@@ -331,6 +331,15 @@
 - I want another [cafe](facility_type)
 - I want another [bar](facility_type)
 
+## intent:ask_specific_facility
+- I want to find details about the [Trattoria Buongiorno Victoriei](facility_name) [restaurant](facility_type)
+- Can you tell me more about the [Trattoria Buongiorno Victoriei](facility_name) [restaurant](facility_type)
+- I need to know where is the [Trattoria Buongiorno Victoriei](facility_name) [restaurant](facility_type)
+- Find me [Trattoria Buongiorno Victoriei](facility_name) [restaurant](facility_type)
+- Give me [Trattoria Buongiorno Victoriei](facility_name) [restaurant](facility_type)
+- I need [Trattoria Buongiorno Victoriei](facility_name) [restaurant](facility_type)
+- Show me [Trattoria Buongiorno Victoriei](facility_name) [restaurant](facility_type)
+
 ## intent:restart
 - restart the conversation
 - restart

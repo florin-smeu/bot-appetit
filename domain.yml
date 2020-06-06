@@ -1,4 +1,6 @@
 actions:
+- connect_db_action
+- get_specific_facility_action
 - get_facility_type_action
 - find_facilities_action
 - get_details_action
@@ -22,6 +24,7 @@ actions:
 - utter_ask_location
 - utter_ask_place_id
 - utter_ask_details
+- utter_ask_more
 
 entities:
 - place_id
@@ -50,6 +53,7 @@ intents:
 - more_results: {triggers: more_results_action}
 - restart: {triggers: action_restart}
 - thanks: {triggers: utter_noworries}
+- ask_specific_facility
 - mood_great
 - mood_unhappy
 
@@ -90,6 +94,9 @@ responses:
   - text: Should I search for a {facility_type} in {location}?
   - text: Do you want to search for a {facility_type} in {location}?
   - text: Do you want a {} in {}?
+  utter_ask_more:
+  - text: What would you like to know about the {facility_name}?
+  - text: What info are you looking for about the {facility_name}?
 
 session_config:
   carry_over_slots_to_new_session: false

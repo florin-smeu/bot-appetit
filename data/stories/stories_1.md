@@ -1,5 +1,6 @@
 ## interactive_story
 * greet
+    - connect_db_action
     - utter_init
     - get_facility_type_action
 * inform{"facility_type": "restaurant"}

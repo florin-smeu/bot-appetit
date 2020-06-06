@@ -12,6 +12,12 @@ from rasa_sdk import Action
 from rasa_sdk.events import SlotSet, FollowupAction, Restarted, AllSlotsReset
 from rasa_sdk.forms import FormAction
 
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer, SentiText
+from summarizer import Summarizer
+
+from mongoengine import *
+from json import *
+
 API_KEY = 'AIzaSyAu-uc1As4xBhfge4l_9Aj4qZ-Vh6IJYWg'
 DEFAULT_WEBSITE = "https://bot-appetit.com"
 DEFAULT_PROTOCOL = "https"
@@ -182,6 +188,35 @@ class Photo:
     def retrieve(self):
         return requests.get(self.path)
 
+class FacilityEntry(Document):
+    name = StringField(required=True, max_length=200)
+    place_id = StringField(required=True, max_length=200)
+    aliases = ListField(required=False)
+
+class MongoUtil:
+    DATABASE="facility_db"
+
+    @staticmethod
+    def connect():
+        connect(db=MongoUtil.DATABASE, username="root", password="root")
+
+
+    @staticmethod
+    def insertFacility(name, place_id, aliases):
+        if not FacilityEntry.objects(place_id=place_id):
+            entry = FacilityEntry(name=name, place_id=place_id, aliases=aliases)
+            entry.save()
+        else:
+            print("[INSERT] Error: Facility {} was already in the database").format(name)
+
+    @staticmethod
+    def getFacilityIdByName(name):
+        facility = FacilityEntry.objects(name=name)
+        json_facility = facility.to_json()
+        print(json_facility)
+        return json_facility["place_id"]
+
+
 class MessengerUtil:
     """Class that stores util fields and methods for posting messages to
     Facebook Messenger"""
@@ -283,6 +318,40 @@ class MessengerUtil:
                 }
             }
         }
+
+class ConnectDbAction(Action):
+    ALREADY_CONNECTED = False
+
+    def name(self) -> Text:
+        return "connect_db_action"
+
+    def run(self,
+            dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List:
+
+        if ConnectDbAction.ALREADY_CONNECTED is True:
+            return []
+
+        MongoUtil.connect()
+        ConnectDbAction.ALREADY_CONNECTED = True
+        return []
+
+
+class GetSpecificFacilityAction(Action):
+    def name(self) -> Text:
+        return "get_specific_facility_action"
+
+    def run(self,
+            dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List:
+
+        facility_name = tracker.get_slot("facility_name")
+        place_id = MongoUtil.getFacilityIdByName(facility_name)
+        if place_id is not None:
+            return [SlotSet("place_id", place_id)]
+        return []
 
 class GetFacilityTypeAction(Action):
     """This action class allows to display buttons for each facility type
@@ -400,7 +469,6 @@ class FindFacilitiesAction(Action):
             return []
 
         #rating_sorted_results = sorted(results, key=itemgetter('rating'), reverse=True)
-
         max_facilities = min(FindFacilitiesAction.MAX_FACILITIES, len(results))
         elements=[]
         for facility in results[:max_facilities]:
@@ -458,6 +526,7 @@ class FindFacilitiesAction(Action):
         return []
         """
 
+
 class DetailsForm(FormAction):
     """This form class retrieves the address of the user's
     eating facility choice to display it to the user."""
@@ -480,9 +549,9 @@ class DetailsForm(FormAction):
                 "place_id": self.from_entity(entity="place_id",
                                                   intent=["inform",
                                                           "search_provider"]),
-                "location": self.from_entity(entity="location",
-                                             intent=["inform",
-                                                     "search_provider"]),
+                #"location": self.from_entity(entity="location",
+                                             #intent=["inform",
+                                                     #"search_provider"]),
                 "facility_name": self.from_entity(entity="facility_name",
                                                   intent=["inform",
                                                           "search_provider"])}
@@ -496,7 +565,7 @@ class DetailsForm(FormAction):
 
         facility_type = tracker.get_slot("facility_type")
         place_id = tracker.get_slot("place_id")
-        location = tracker.get_slot("location")
+        #location = tracker.get_slot("location")
         facility_name = tracker.get_slot("facility_name")
 
         message = "I am now searching for details for the {} {}".format(facility_name, facility_type)
@@ -514,7 +583,7 @@ class GetDetailsAction(Action):
 
         facility_type = tracker.get_slot("facility_type")
         place_id = tracker.get_slot("place_id")
-        location = tracker.get_slot("location")
+        #location = tracker.get_slot("location")
         facility_name = tracker.get_slot("facility_name")
 
         #place_id = "ChIJIYW2hE3_sUARwjQv-T-KZh0"
@@ -635,11 +704,64 @@ ATMOSPHERE_DICT = {
         -1: "Oops! Couldn't find information about the rating :/",
     },
     "emoji": EMOJIES["star"],
+    "review_messages": {
+        5: "Seems like you can't go wrong with this place, {}% of the reviews were positive",
+        4: "Awesome reviews! {}% of them were positive",
+        3: "Some people enjoyed this place! {}% of the reviews were positive",
+        2: "{}% of the reviews were positive",
+        1: "Not so many satisfied people... Just {}% of the reviews for this place were positive",
+        0: "Maybe you should consider a better option. :/ Only {}% of reviews were positive",
+        -1: "I couldn't find any review for this place :(",
+    }
 }
 
 class AtmosphereAction(Action):
     def name(self) -> Text:
         return "atmosphere_action"
+
+    analyzer = SentimentIntensityAnalyzer()
+    summarizer = Summarizer()
+
+    REVIEW_SENTIMENT_CONSTANT = 1 / 3
+
+    @staticmethod
+    def compute_aggregate_score(scores):
+        pos_reviews = 0
+        neg_reviews = 0
+        total_reviews = len(scores)
+        for score in scores:
+            if (score['pos'] * AtmosphereAction.REVIEW_SENTIMENT_CONSTANT > score['neg']):
+                pos_reviews += 1
+            else:
+                neg_reviews += 1
+
+        return pos_reviews / total_reviews * 100, neg_reviews / total_reviews * 100
+
+
+    @staticmethod
+    def review_sentiment_analysis(reviews):
+        scores = []
+        message = ""
+        for review in reviews:
+            message += review["text"] + "\n"
+            score = AtmosphereAction.analyzer.polarity_scores(review["text"])
+            scores.append(score)
+            message += "score: " + str(score["neg"]) + " " + str(score["pos"]) + "\n"
+
+        pos_percent, neg_percent =  AtmosphereAction.compute_aggregate_score(scores)
+        message += str(pos_percent) + "\n"
+        key = round(pos_percent * 5 / 100)
+        message += str(key) + "\n"
+        return message + ATMOSPHERE_DICT.get("review_messages")[key].format(int(pos_percent))
+
+    @staticmethod
+    def review_summarization(reviews):
+        message = "\n"
+        for review in reviews:
+            result = AtmosphereAction.summarizer(review["text"])
+            full = ''.join(result)
+            message += full + "\n"
+        return message
 
     def run(self,
             dispatcher: CollectingDispatcher,
@@ -661,6 +783,20 @@ class AtmosphereAction(Action):
         else:
             message = ATMOSPHERE_DICT.get("messages")[-1]
         dispatcher.utter_message(message)
+
+        if "reviews" not in facility_details:
+            review_message = ATMOSPHERE_DICT.get("review_messages")[-1]
+            dispatcher.utter_message(review_message)
+        else:
+            # Review Sentiment analysis
+            review_message = AtmosphereAction.review_sentiment_analysis(facility_details["reviews"])
+            dispatcher.utter_message(review_message)
+            print(review_message)
+            # Review Summarization
+            summary_message = AtmosphereAction.review_summarization(facility_details["reviews"])
+            print(summary_message)
+            dispatcher.utter_message(summary_message)
+
         return []
 
 PHONE_DICT = {
@@ -851,6 +987,8 @@ class ScheduleAction(Action):
         return []
 
 class MoreResultsAction(Action):
+    embedder = SentenceTransformer('bert-base-nli-mean-tokens')
+
     def name(self) -> Text:
         return "more_results_action"
 
