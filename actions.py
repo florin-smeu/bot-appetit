@@ -987,7 +987,6 @@ class ScheduleAction(Action):
         return []
 
 class MoreResultsAction(Action):
-    embedder = SentenceTransformer('bert-base-nli-mean-tokens')
 
     def name(self) -> Text:
         return "more_results_action"
