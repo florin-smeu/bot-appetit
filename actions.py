@@ -188,34 +188,6 @@ class Photo:
     def retrieve(self):
         return requests.get(self.path)
 
-class FacilityEntry(Document):
-    name = StringField(required=True, max_length=200)
-    place_id = StringField(required=True, max_length=200)
-    aliases = StringField(required=False)
-
-class MongoUtil:
-    DATABASE="facility_db"
-
-    @staticmethod
-    def connect():
-        connect(db=MongoUtil.DATABASE, username="root", password="root")
-
-
-    @staticmethod
-    def insertFacility(name, place_id, aliases):
-        if not FacilityEntry.objects(place_id=place_id):
-            entry = FacilityEntry(name=name, place_id=place_id, aliases=aliases)
-            entry.save()
-        else:
-            print("[INSERT] Error: Facility {} was already in the database").format(name)
-
-    @staticmethod
-    def getFacilityIdByName(name):
-        facility = FacilityEntry.objects(name=name)
-        json_facility = facility.to_json()
-        print(json_facility)
-        return json_facility["place_id"]
-
 
 class MessengerUtil:
     """Class that stores util fields and methods for posting messages to
@@ -319,25 +291,6 @@ class MessengerUtil:
             }
         }
 
-class ConnectDbAction(Action):
-    ALREADY_CONNECTED = False
-
-    def name(self) -> Text:
-        return "connect_db_action"
-
-    def run(self,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List:
-
-        if ConnectDbAction.ALREADY_CONNECTED is True:
-            return []
-
-        MongoUtil.connect()
-        ConnectDbAction.ALREADY_CONNECTED = True
-        return []
-
-
 class GetSpecificFacilityAction(Action):
     def name(self) -> Text:
         return "get_specific_facility_action"
@@ -348,9 +301,12 @@ class GetSpecificFacilityAction(Action):
             domain: Dict[Text, Any]) -> List:
 
         facility_name = tracker.get_slot("facility_name")
-        place_id = MongoUtil.getFacilityIdByName(facility_name)
-        if place_id is not None:
-            return [SlotSet("place_id", place_id)]
+        facilities = tracker.get_slot("facility_list")
+
+        for facility in facilities:
+            if facility["name"] == facility_name:
+                return [SlotSet("place_id", facility["place_id"])]
+
         return []
 
 class GetFacilityTypeAction(Action):
@@ -468,13 +424,6 @@ class FindFacilitiesAction(Action):
                                                               location.title()))
             return []
 
-        #rating_sorted_results = sorted(results, key=itemgetter('rating'), reverse=True)
-        # Save name:place_id to database
-        for facility in results:
-            name = facility["name"]
-            place_id = facility["place_id"]
-            MongoUtil.insertFacility(name=name, place_id=place_id, aliases="")
-
         max_facilities = min(FindFacilitiesAction.MAX_FACILITIES, len(results))
         elements=[]
         for facility in results[:max_facilities]:
@@ -511,7 +460,7 @@ class FindFacilitiesAction(Action):
 
         dispatcher.utter_message(present_facilities_message)
         dispatcher.utter_message(json_message=facilities_template)
-        return []
+        return [SlotSet("facility_list", results)]
         """
 
         buttons = []

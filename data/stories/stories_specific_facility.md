@@ -1,6 +1,5 @@
 ## specific facility
 * ask_specific_facility{"facility_name":"foo_details", "facility_type":"foo_facility_type"}
-    - connect_db_action
     - get_specific_facility_action
     - slot {"place_id": "foo_place_id"}
     - get_details_action

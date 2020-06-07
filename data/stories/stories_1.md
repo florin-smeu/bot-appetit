@@ -17,6 +17,7 @@
     - form{"name": null}
     - slot{"requested_slot": null}
     - find_facilities_action
+    - slot{"facility_list": "foo_facility_list"}
 * inform{"place_id": "ChIJ0wYwUjD_sUAR3d-lY7wFbg8", "facility_name": "Noeme - former GUXT"}
     - slot{"facility_name": "Noeme - former GUXT"}
     - slot{"place_id": "ChIJ0wYwUjD_sUAR3d-lY7wFbg8"}

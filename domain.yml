@@ -1,5 +1,4 @@
 actions:
-- connect_db_action
 - get_specific_facility_action
 - get_facility_type_action
 - find_facilities_action
@@ -109,6 +108,8 @@ slots:
   place_id:
     type: unfeaturized
   facility_name:
+    type: unfeaturized
+  facility_list:
     type: unfeaturized
   facility_details:
     type: unfeaturized
