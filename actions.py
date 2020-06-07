@@ -15,8 +15,6 @@ from rasa_sdk.forms import FormAction
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer, SentiText
 from summarizer import Summarizer
 
-from mongoengine import *
-from json import *
 
 API_KEY = 'AIzaSyAu-uc1As4xBhfge4l_9Aj4qZ-Vh6IJYWg'
 DEFAULT_WEBSITE = "https://bot-appetit.com"
