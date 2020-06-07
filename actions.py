@@ -191,7 +191,7 @@ class Photo:
 class FacilityEntry(Document):
     name = StringField(required=True, max_length=200)
     place_id = StringField(required=True, max_length=200)
-    aliases = ListField(required=False)
+    aliases = StringField(required=False)
 
 class MongoUtil:
     DATABASE="facility_db"
@@ -469,6 +469,12 @@ class FindFacilitiesAction(Action):
             return []
 
         #rating_sorted_results = sorted(results, key=itemgetter('rating'), reverse=True)
+        # Save name:place_id to database
+        for facility in results:
+            name = facility["name"]
+            place_id = facility["place_id"]
+            MongoUtil.insertFacility(name=name, place_id=place_id, aliases="")
+
         max_facilities = min(FindFacilitiesAction.MAX_FACILITIES, len(results))
         elements=[]
         for facility in results[:max_facilities]:
