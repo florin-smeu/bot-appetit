@@ -23,7 +23,6 @@
     - photos_action
     - address_action
     - utter_ask_more
-    > printed_details
 
 ## multiple deny after printed details type
 > printed_details
@@ -53,7 +52,6 @@
     - photos_action
     - address_action
     - utter_ask_more
-    > printed_details
 
 ## multiple affirm after detail asked type
 > detail_asked
@@ -80,7 +78,6 @@
     - photos_action
     - address_action
     - utter_ask_more
-    > printed_details
 
 ## multiple deny after detail asked type
 > detail_asked
@@ -110,9 +107,6 @@
     - photos_action
     - address_action
     - utter_ask_more
-    > printed_details
-
-################################################################################
 
 ## multiple affirm after printed details type location
 > printed_details
@@ -140,7 +134,6 @@
     - photos_action
     - address_action
     - utter_ask_more
-    > printed_details
 
 ## multiple deny after printed details type location
 > printed_details
@@ -172,7 +165,6 @@
     - photos_action
     - address_action
     - utter_ask_more
-    > printed_details
 
 ## multiple affirm after detail asked type location
 > detail_asked
@@ -200,7 +192,6 @@
     - photos_action
     - address_action
     - utter_ask_more
-    > printed_details
 
 ## multiple deny after detail asked type location
 > detail_asked
@@ -232,4 +223,3 @@
     - photos_action
     - address_action
     - utter_ask_more
-    > printed_details

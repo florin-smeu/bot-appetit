@@ -22,7 +22,7 @@
     - photos_action
     - address_action
     - utter_ask_more
-    > printed_details
+> printed_details
 
 ## provided details deny type
 * search_provider{"facility_type": "facility_foo"}
@@ -51,7 +51,7 @@
     - photos_action
     - address_action
     - utter_ask_more
-    > printed_details
+> printed_details
 
 ## provided details affirm type location
 * search_provider{"facility_type": "facility_foo"}
@@ -77,7 +77,7 @@
     - photos_action
     - address_action
     - utter_ask_more
-    > printed_details
+> printed_details
 
 ## provided details deny type location
 * search_provider{"facility_type": "facility_foo"}
@@ -106,4 +106,4 @@
     - photos_action
     - address_action
     - utter_ask_more
-    > printed_details
+> printed_details

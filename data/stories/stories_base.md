@@ -1,4 +1,4 @@
-## base story
+## print facilities
 * greet
     - utter_init
     - get_facility_type_action
@@ -17,7 +17,10 @@
     - slot{"requested_slot": null}
     - find_facilities_action
     - slot{"facility_list": "foo_facility_list"}
-    > printed_facilities
+> printed_facilities
+
+## choose facility
+> printed_facilities
 * inform{"place_id": "ChIJ0wYwUjD_sUAR3d-lY7wFbg8", "facility_name": "Noeme - former GUXT"}
     - slot{"facility_name": "Noeme - former GUXT"}
     - slot{"place_id": "ChIJ0wYwUjD_sUAR3d-lY7wFbg8"}
@@ -36,7 +39,7 @@
     - photos_action
     - address_action
     - utter_ask_more
-    > printed_details
+> printed_details
 
 ## thank you
 * thanks
@@ -47,7 +50,7 @@
     - utter_goodbye
 
 ## restart after details done
-> details_done
+> printed_details
 * restart
     - action_restart
     - utter_init

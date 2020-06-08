@@ -10,7 +10,6 @@
     - photos_action
     - address_action
     - utter_ask_more
-    > printed_details
 
 ## specific facility after printed details name type
 > printed_details
@@ -24,7 +23,6 @@
     - photos_action
     - address_action
     - utter_ask_more
-    - printed_details
 
 ## specific facility after detail asked name type
 > detail_asked
@@ -38,9 +36,6 @@
     - photos_action
     - address_action
     - utter_ask_more
-    - printed_details
-
-################################################################################
 
 ## specific facility after printed facilities name
 > printed_facilities
@@ -53,7 +48,6 @@
     - photos_action
     - address_action
     - utter_ask_more
-    > printed_details
 
 ## specific facility after printed details name
 > printed_details
@@ -66,7 +60,6 @@
     - photos_action
     - address_action
     - utter_ask_more
-    - printed_details
 
 ## specific facility after detail asked name
 > detail_asked
@@ -79,10 +72,6 @@
     - photos_action
     - address_action
     - utter_ask_more
-    - printed_details
-
-################################################################################
-################################################################################
 
 ## specific facility after printed facilities name type
 * ask_specific_facility{"facility_name":"foo_name", "facility_type":"foo_facility_type"}
@@ -98,8 +87,6 @@
 * ask_specific_facility{"facility_name":"foo_name", "facility_type":"foo_facility_type"}
     - slot{"facility_name": "foo_name"}
     - utter_sorry_specific
-
-################################################################################
 
 ## specific facility after printed facilities name
 * ask_specific_facility{"facility_name":"foo_name"}
