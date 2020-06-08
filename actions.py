@@ -34,6 +34,10 @@ EMOJIES = {
     "phone": u'\U0000260E',
     "calendar": u'\U0001F4C6',
     "world": u'\U0001F30D',
+    "star_struck": u'\U0001F929',
+    "face_with_rolling_eyes": u'\U0001F644',
+    "monocle": u'\U0001F9D0',
+    "sunglasses": u'\U0001F60E',
 }
 TEXTSEARCH_ENDPOINTS = {
     "base": "https://maps.googleapis.com/maps/api/place/textsearch/json?",
@@ -364,13 +368,6 @@ class FacilityForm(FormAction):
                tracker: Tracker,
                domain: Dict[Text, Any]
                ) -> List[Dict]:
-        """Once required slots are filled, print a message"""
-
-        location = tracker.get_slot('location')
-        facility_type = tracker.get_slot('facility_type')
-
-        message = "I am now searching for {}s in {}".format(facility_type, location)
-        dispatcher.utter_message(message)
         return []
 
 class FindFacilitiesAction(Action):
@@ -409,6 +406,8 @@ class FindFacilitiesAction(Action):
                          tracker: Tracker,
                          domain: Dict[Text, Any],
                          results):
+        facility_type = tracker.get_slot("facility_type")
+        location = tracker.get_slot("location")
 
         FindFacilitiesAction.num_facilities = len(results)
         if FindFacilitiesAction.num_printed == 0:
@@ -420,6 +419,7 @@ class FindFacilitiesAction(Action):
         end_idx = FindFacilitiesAction.num_printed + FindFacilitiesAction.max_print
         if start_idx == end_idx:
             dispatcher.utter_message("Sorry, no more results")
+            return
 
         elements=[]
         for facility in results[start_idx:end_idx]:
@@ -447,12 +447,13 @@ class FindFacilitiesAction(Action):
 
         facilities_template = MessengerUtil.create_template_message(template_type="generic",
                                                                     elements=elements)
-
-        if FindFacilitiesAction.num_facilities == 1:
-            present_facilities_message = "Here is a {} near you:".format(facility_type)
+        num_places = end_idx - start_idx
+        if num_places == 1:
+            present_facilities_message = "Here is a {} in {}:".format(facility_type, location)
         else:
-            present_facilities_message = "Here are {} {}s near you:".format(max_facilities,
-                                                                            facility_type)
+            present_facilities_message = "Here are {} {}s in {}:".format(num_places,
+                                                                         facility_type,
+                                                                         location)
         dispatcher.utter_message(present_facilities_message)
         dispatcher.utter_message(json_message=facilities_template)
         FindFacilitiesAction.num_printed = FindFacilitiesAction.max_print
@@ -524,9 +525,6 @@ class DetailsForm(FormAction):
                 "place_id": self.from_entity(entity="place_id",
                                                   intent=["inform",
                                                           "search_provider"]),
-                #"location": self.from_entity(entity="location",
-                                             #intent=["inform",
-                                                     #"search_provider"]),
                 "facility_name": self.from_entity(entity="facility_name",
                                                   intent=["inform",
                                                           "search_provider"])}
@@ -537,14 +535,6 @@ class DetailsForm(FormAction):
                tracker: Tracker,
                domain: Dict[Text, Any]
                ) -> List[Dict]:
-
-        facility_type = tracker.get_slot("facility_type")
-        place_id = tracker.get_slot("place_id")
-        #location = tracker.get_slot("location")
-        facility_name = tracker.get_slot("facility_name")
-
-        message = "I am now searching for details for the {} {}".format(facility_name, facility_type)
-        dispatcher.utter_message(message)
         return []
 
 class GetDetailsAction(Action):
@@ -558,10 +548,7 @@ class GetDetailsAction(Action):
 
         facility_type = tracker.get_slot("facility_type")
         place_id = tracker.get_slot("place_id")
-        #location = tracker.get_slot("location")
         facility_name = tracker.get_slot("facility_name")
-
-        #place_id = "ChIJIYW2hE3_sUARwjQv-T-KZh0"
         details = Details(place_id)
         success = details.retrieve()
 
@@ -612,8 +599,8 @@ class PhotosAction(Action):
 
             photos.append(photo_obj)
 
-        message = "Here are some photos for {} in {}".format(facility_name, location)
-        dispatcher.utter_message(message)
+        #message = "Here are some photos for {} in {}".format(facility_name, location)
+        #dispatcher.utter_message(message)
 
         buttons=[]
         elements = MessengerUtil.create_elements(title=facility_details["name"],
@@ -680,9 +667,9 @@ ATMOSPHERE_DICT = {
     },
     "emoji": EMOJIES["star"],
     "review_messages": {
-        5: "Seems like you can't go wrong with this place, {}% of the reviews were positive",
-        4: "Awesome reviews! {}% of them were positive",
-        3: "Some people enjoyed this place! {}% of the reviews were positive",
+        5: EMOJIES["star_struck"] + " Seems like you can't go wrong with this place, {}% of the reviews were positive",
+        4: EMOJIES["sunglasses"]  + " Awesome reviews! {}% of them were positive",
+        3: EMOJIES["monocle"] + " Some people enjoyed this place! {}% of the reviews were positive",
         2: "{}% of the reviews were positive",
         1: "Not so many satisfied people... Just {}% of the reviews for this place were positive",
         0: "Maybe you should consider a better option. :/ Only {}% of reviews were positive",
@@ -704,6 +691,8 @@ class AtmosphereAction(Action):
         pos_reviews = 0
         neg_reviews = 0
         total_reviews = len(scores)
+        if total_reviews == 0:
+            return 0, 0
         for score in scores:
             if (score['pos'] * AtmosphereAction.REVIEW_SENTIMENT_CONSTANT > score['neg']):
                 pos_reviews += 1
@@ -716,18 +705,15 @@ class AtmosphereAction(Action):
     @staticmethod
     def review_sentiment_analysis(reviews):
         scores = []
-        message = ""
         for review in reviews:
-            message += review["text"] + "\n"
             score = AtmosphereAction.analyzer.polarity_scores(review["text"])
             scores.append(score)
-            message += "score: " + str(score["neg"]) + " " + str(score["pos"]) + "\n"
 
         pos_percent, neg_percent =  AtmosphereAction.compute_aggregate_score(scores)
-        message += str(pos_percent) + "\n"
+        if pos_percent == 0 and neg_percent == 0:
+            return ATMOSPHERE_DICT.get("review_messages")[-1]
         key = round(pos_percent * 5 / 100)
-        message += str(key) + "\n"
-        return message + ATMOSPHERE_DICT.get("review_messages")[key].format(int(pos_percent))
+        return ATMOSPHERE_DICT.get("review_messages")[key].format(int(pos_percent))
 
     @staticmethod
     def review_summarization(reviews):
@@ -735,7 +721,8 @@ class AtmosphereAction(Action):
         for review in reviews:
             result = AtmosphereAction.summarizer(review["text"])
             full = ''.join(result)
-            message += full + "\n"
+            if full != '':
+                message += "\n" + full + " - " + review["author_name"] + ", " + review["relative_time_description"] + "\n"
         return message
 
     def run(self,
@@ -753,11 +740,11 @@ class AtmosphereAction(Action):
         rating = ATMOSPHERE_DICT.get("name")
         if rating in facility_details:
             value = facility_details[rating]
-            message = round(value) * ATMOSPHERE_DICT.get("emoji") + " " + \
+            rating_message = round(value) * ATMOSPHERE_DICT.get("emoji") + " " + \
                       ATMOSPHERE_DICT.get("messages")[math.floor(value)].format(value)
         else:
-            message = ATMOSPHERE_DICT.get("messages")[-1]
-        dispatcher.utter_message(message)
+            rating_message = ATMOSPHERE_DICT.get("messages")[-1]
+        dispatcher.utter_message(rating_message)
 
         if "reviews" not in facility_details:
             review_message = ATMOSPHERE_DICT.get("review_messages")[-1]

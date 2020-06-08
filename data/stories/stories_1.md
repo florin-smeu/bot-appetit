@@ -34,6 +34,7 @@
     - slot{"facility_details": "foo_details"}
     - photos_action
     - address_action
+    - utter_ask_more
     > details_done
 
 ## thank you
@@ -47,6 +48,8 @@
 ## restart
 * restart
     - action_restart
+    - utter_init
+    - get_facility_type_action
 
 ## help
 * ask_help
