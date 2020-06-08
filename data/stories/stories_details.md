@@ -4,11 +4,24 @@
     - price_level_action
 > detail_asked
 
-## ask atmosphere
+## ask atmosphere with reviews
 > details_done
 * ask_atmosphere
     - atmosphere_action
+    - utter_ask_reviews
+* affirm
+    - review_summary_action
 > detail_asked
+
+## ask atmosphere without reviews
+> details_done
+* ask_atmosphere
+    - atmosphere_action
+    - utter_ask_reviews
+* deny
+    - utter_ok
+> detail_asked
+
 
 ## ask phone
 > details_done

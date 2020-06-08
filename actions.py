@@ -682,7 +682,7 @@ class AtmosphereAction(Action):
         return "atmosphere_action"
 
     analyzer = SentimentIntensityAnalyzer()
-    summarizer = Summarizer()
+
 
     REVIEW_SENTIMENT_CONSTANT = 1 / 3
 
@@ -715,16 +715,6 @@ class AtmosphereAction(Action):
         key = round(pos_percent * 5 / 100)
         return ATMOSPHERE_DICT.get("review_messages")[key].format(int(pos_percent))
 
-    @staticmethod
-    def review_summarization(reviews):
-        message = "\n"
-        for review in reviews:
-            result = AtmosphereAction.summarizer(review["text"])
-            full = ''.join(result)
-            if full != '':
-                message += "\n" + full + " - " + review["author_name"] + ", " + review["relative_time_description"] + "\n"
-        return message
-
     def run(self,
             dispatcher: CollectingDispatcher,
             tracker: Tracker,
@@ -754,12 +744,42 @@ class AtmosphereAction(Action):
             review_message = AtmosphereAction.review_sentiment_analysis(facility_details["reviews"])
             dispatcher.utter_message(review_message)
             print(review_message)
-            # Review Summarization
-            summary_message = AtmosphereAction.review_summarization(facility_details["reviews"])
-            print(summary_message)
-            dispatcher.utter_message(summary_message)
 
         return []
+
+class ReviewSummaryAction(Action):
+    summarizer = Summarizer()
+
+    @staticmethod
+    def review_summarization(reviews):
+        message = "\n"
+        for review in reviews:
+            result = ReviewSummaryAction.summarizer(review["text"])
+            full = ''.join(result)
+            if full != '':
+                message += "\n" + full + " - " + review["author_name"] + ", " + review["relative_time_description"] + "\n"
+        return message
+
+    def name(self) -> Text:
+        return "review_summary_action"
+
+    def run(self,
+            dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List:
+        facility_details = tracker.get_slot("facility_details")
+        if facility_details is None:
+            error_message = "You have to choose a facility first"
+            dispatcher.utter_message(error_message)
+            return []
+
+        if "reviews" not in facility_details:
+            review_message = ATMOSPHERE_DICT.get("review_messages")[-1]
+            dispatcher.utter_message(review_message)
+        else:
+            summary_message = ReviewSummaryAction.review_summarization(facility_details["reviews"])
+            print(summary_message)
+            dispatcher.utter_message(summary_message)
 
 PHONE_DICT = {
     "name": "international_phone_number",

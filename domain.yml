@@ -6,6 +6,7 @@ actions:
 - photos_action
 - price_level_action
 - atmosphere_action
+- review_summary_action
 - phone_action
 - website_action
 - address_action
@@ -75,7 +76,9 @@ responses:
   - text: Until next time! :D
   utter_out_of_scope:
   - text: I didn't catch that. What do you mean?
-
+  utter_ok:
+  - text: Ok
+  - text: Okay
   utter_ask_place_id:
   - text: Which {facility_type} would you like?
   - text: Oops! I still need the {facility_type} of your choice to find its address.
@@ -92,10 +95,14 @@ responses:
   utter_ask_correct_params:
   - text: Should I search for a {facility_type} in {location}?
   - text: Do you want to search for a {facility_type} in {location}?
-  - text: Do you want a {} in {}?
+  - text: Do you want a {facility_type} in {location}?
   utter_ask_more:
   - text: What would you like to know about the {facility_name}?
   - text: What info are you looking for about the {facility_name}?
+  utter_ask_reviews:
+  - text: Would you like to read some reviews?
+  - text: Should I search for some reviews?
+  - text: Do you want to see some reviews?
 
 session_config:
   carry_over_slots_to_new_session: false
