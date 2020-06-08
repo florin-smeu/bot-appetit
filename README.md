@@ -1,5 +1,11 @@
-![logo](https://drive.google.com/uc?export=view&id=11Q_QjS40e-Z_WNNVC5Jn0jBwgrleiIAB)
+![logo](img/bot-appetit.png)
 
-### bot appetit
+# **bot appetit**
 
-A restaurant chatbot implemented using the [RASA](https://rasa.com/) framework.
+#### A restaurant chatbot implemented using the [RASA](https://rasa.com/) framework
+
+#### Functionality
+Lorem impsum dolor sit amet.
+
+#### Implementation
+Another lorem ipsum dolor sit amet.
