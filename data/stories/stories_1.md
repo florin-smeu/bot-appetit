@@ -45,11 +45,20 @@
 * goodbye
     - utter_goodbye
 
-## restart
+## restart after details done
+> details_done
 * restart
     - action_restart
     - utter_init
     - get_facility_type_action
+
+## restart after detail_asked
+> detail_asked
+* restart
+    - action_restart
+    - utter_init
+    - get_facility_type_action
+
 
 ## help
 * ask_help

@@ -21,6 +21,7 @@
     - slot{"facility_details": "foo_details"}
     - photos_action
     - address_action
+    - utter_ask_more
 
 
 ## multiple affirm detail asked
@@ -46,6 +47,7 @@
     - slot{"facility_details": "foo_details"}
     - photos_action
     - address_action
+    - utter_ask_more
 
 ## multiple deny
 > details_done
@@ -73,6 +75,7 @@
     - slot{"facility_details": "foo_details"}
     - photos_action
     - address_action
+    - utter_ask_more
 
 ## multiple deny detail asked
 > detail_asked
@@ -100,3 +103,4 @@
     - slot{"facility_details": "foo_details"}
     - photos_action
     - address_action
+    - utter_ask_more

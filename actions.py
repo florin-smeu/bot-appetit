@@ -734,16 +734,14 @@ class AtmosphereAction(Action):
                       ATMOSPHERE_DICT.get("messages")[math.floor(value)].format(value)
         else:
             rating_message = ATMOSPHERE_DICT.get("messages")[-1]
-        dispatcher.utter_message(rating_message)
 
         if "reviews" not in facility_details:
             review_message = ATMOSPHERE_DICT.get("review_messages")[-1]
-            dispatcher.utter_message(review_message)
         else:
             # Review Sentiment analysis
             review_message = AtmosphereAction.review_sentiment_analysis(facility_details["reviews"])
-            dispatcher.utter_message(review_message)
-            print(review_message)
+
+        dispatcher.utter_message(rating_message + "\n" + review_message)
 
         return []
 
@@ -757,7 +755,7 @@ class ReviewSummaryAction(Action):
             result = ReviewSummaryAction.summarizer(review["text"])
             full = ''.join(result)
             if full != '':
-                message += "\n" + full + " - " + review["author_name"] + ", " + review["relative_time_description"] + "\n"
+                message += "\n-----\n" + full + " - " + review["author_name"] + ", " + review["relative_time_description"]
         return message
 
     def name(self) -> Text:
