@@ -39,3 +39,10 @@
 * ask_photos
     - photos_action
 > detail_asked
+
+
+## more results
+> details_done
+* more_results
+    - more_results_action
+> detail_asked

@@ -374,7 +374,9 @@ class FacilityForm(FormAction):
         return []
 
 class FindFacilitiesAction(Action):
-    MAX_FACILITIES = 10
+    num_facilities = 20
+    num_printed = 0
+    max_printed = 10
 
     @staticmethod
     def _resolve_name(facility_types, resource) -> Text:
@@ -403,28 +405,24 @@ class FindFacilitiesAction(Action):
         results = requests.get(full_path).json()
         return results['results']
 
-    def name(self) -> Text:
-        return "find_facilities_action"
+    def print_facilities(dispatcher: CollectingDispatcher,
+                         tracker: Tracker,
+                         domain: Dict[Text, Any],
+                         results):
 
-    def run(self,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List:
+        FindFacilitiesAction.num_facilities = len(results)
+        if FindFacilitiesAction.num_printed == 0:
+            FindFacilitiesAction.max_print = min(10, FindFacilitiesAction.num_facilities)
+        else:
+            FindFacilitiesAction.max_print = FindFacilitiesAction.num_facilities - FindFacilitiesAction.num_printed
 
-        location = tracker.get_slot('location')
-        facility_type = tracker.get_slot('facility_type')
+        start_idx = FindFacilitiesAction.num_printed
+        end_idx = FindFacilitiesAction.num_printed + FindFacilitiesAction.max_print
+        if start_idx == end_idx:
+            dispatcher.utter_message("Sorry, no more results")
 
-        results = FindFacilitiesAction._find_facilities(location, facility_type)
-        button_name = FindFacilitiesAction._resolve_name(FACILITY_TYPES, facility_type)
-        if len(results) == 0:
-            dispatcher.utter_message(
-                "Sorry, we could not find a {} in {}.".format(button_name,
-                                                              location.title()))
-            return []
-
-        max_facilities = min(FindFacilitiesAction.MAX_FACILITIES, len(results))
         elements=[]
-        for facility in results[:max_facilities]:
+        for facility in results[start_idx:end_idx]:
             name = facility["name"]
             place_id = facility["place_id"]
             payload = "/inform{\"place_id\":\"" + place_id + "\", \"facility_name\":\"" + name + "\"}"
@@ -450,14 +448,38 @@ class FindFacilitiesAction(Action):
         facilities_template = MessengerUtil.create_template_message(template_type="generic",
                                                                     elements=elements)
 
-        if max_facilities == 1:
+        if FindFacilitiesAction.num_facilities == 1:
             present_facilities_message = "Here is a {} near you:".format(facility_type)
         else:
             present_facilities_message = "Here are {} {}s near you:".format(max_facilities,
                                                                             facility_type)
-
         dispatcher.utter_message(present_facilities_message)
         dispatcher.utter_message(json_message=facilities_template)
+        FindFacilitiesAction.num_printed = FindFacilitiesAction.max_print
+
+    def name(self) -> Text:
+        return "find_facilities_action"
+
+    def run(self,
+            dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List:
+
+        FindFacilitiesAction.num_printed = 0
+
+        location = tracker.get_slot('location')
+        facility_type = tracker.get_slot('facility_type')
+
+        results = FindFacilitiesAction._find_facilities(location, facility_type)
+        button_name = FindFacilitiesAction._resolve_name(FACILITY_TYPES, facility_type)
+        if len(results) == 0:
+            dispatcher.utter_message(
+                "Sorry, we could not find a {} in {}.".format(button_name,
+                                                              location.title()))
+            return [SlotSet("facility_list", [])]
+
+
+        FindFacilitiesAction.print_facilities(dispatcher, tracker, domain, results)
         return [SlotSet("facility_list", results)]
         """
 
@@ -949,11 +971,8 @@ class MoreResultsAction(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List:
 
-        #facility_details = tracker.get_slot("facility_details")
-
-        #facility_type = tracker.get_slot("facility_type")
-        message = "This feature is currently under development. :/"
-        dispatcher.utter_message(message)
+        facility_list = tracker.get_slot("facility_list")
+        FindFacilitiesAction.print_facilities(dispatcher, tracker, domain, facility_list)
         return []
 
 class HelpAction(Action):
