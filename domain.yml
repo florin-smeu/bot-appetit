@@ -50,7 +50,7 @@ intents:
 - ask_website: {triggers: website_action}
 - ask_address: {triggers: address_action}
 - ask_schedule: {triggers: schedule_action}
-- ask_help: {triggers: help_action}
+- ask_help: {triggers: utter_help}
 - more_results: {triggers: more_results_action}
 - restart: {triggers: action_restart}
 - thanks: {triggers: utter_noworries}
@@ -60,35 +60,35 @@ intents:
 
 responses:
   utter_init:
-  - text: "Hey there! u'\U0001F539'\n
-           I'm bot appetit and I will help you find the best place to eat, drink
-           or have a coffee. Here's a little tutorial.\n
-           ----\n
-           Search for a restaurant, bar or cafe. Choose the place
-           you like, and after that you can ask me details like:\n
-           \tu'\U0001F539' price level\n
-           \tu'\U0001F539' rating\n
-           \tu'\U0001F539' review information\n
-           \tu'\U0001F539' address\n
-           \tu'\U0001F539' website\n
-           \tu'\U0001F539' phone\n
-           \tu'\U0001F539' schedule\n
-           If I ever get stuck, restart me by typing 'restart'. After that,
-           greet me to start a fresh conversation.\n
-           ----\n
-           Review the tutorial by typing 'help'
-           Let's get started!"
+  - text: "Hey there! \U0001F601\n
+          I'm bot appetit and I will help you find the best place to eat, drink
+          or have a coffee. Here's a little tutorial.\n
+          ----\n
+          Search for a restaurant, bar or cafe. Choose the place
+          you like, and after that you can ask me details like:\n
+          \t\U0001F4B8 price level\n
+          \t\U00002B50 rating\n
+          \t\U0001F539 review information\n
+          \t\U0001F4CC address\n
+          \t\U0001F30D website\n
+          \t\U0000260E phone\n
+          \t\U0001F4C6 schedule\n
+          If I ever get stuck, restart me by typing 'restart'. After that,
+          greet me to start a fresh conversation.\n
+          ----\n
+          Review the tutorial by typing 'help'
+          Let's get started!"
   utter_greet:
-  - text: What are you looking for? :D
-  - text: :D Please choose one of the following options
-  - text: :D What can I help you with today?
+  - text: "What are you looking for? \U0001F601"
+  - text: "\U0001F601 Please choose one of the following options"
+  - text: "\U0001F601 What can I help you with today?"
   utter_noworries:
   - text: My pleasure!
   - text: You are welcome!
   utter_goodbye:
-  - text: Talk to you later! :)
-  - text: Have a good day! :D
-  - text: Until next time! :D
+  - text: Talk to you later! ;)
+  - text: "Have a good day! \U0001F607"
+  - text: "Until next time! \U0001F607"
   utter_out_of_scope:
   - text: I didn't catch that. What do you mean?
   utter_ok:
@@ -126,16 +126,16 @@ responses:
   - text: Sorry, I cannot search for {facility_name} now, please type 'restart'.
   utter_help:
   - text: "Here to help! Search for a restaurant, bar or cafe. Choose the place
-           you like, and after that you can ask me details like:\n
-           \tu'\U0001F539' price level\n
-           \tu'\U0001F539' rating\n
-           \tu'\U0001F539' review information\n
-           \tu'\U0001F539' address\n
-           \tu'\U0001F539' website\n
-           \tu'\U0001F539' phone\n
-           \tu'\U0001F539' schedule\n
-           If I ever get stuck, restart me by typing 'restart'. After that,
-           greet me to start a fresh conversation."
+          you like, and after that you can ask me details like:\n
+          \t\U0001F4B8 price level\n
+          \t\U00002B50 rating\n
+          \t\U0001F539 review information\n
+          \t\U0001F4CC address\n
+          \t\U0001F30D website\n
+          \t\U0000260E phone\n
+          \t\U0001F4C6 schedule\n
+          If I ever get stuck, restart me by typing 'restart'. After that,
+          greet me to start a fresh conversation.\n"
 
 session_config:
   carry_over_slots_to_new_session: false
