@@ -42,6 +42,7 @@ intents:
 - goodbye: {triggers: utter_goodbye}
 - inform
 - search_provider
+- ask_reviews
 - ask_photos: {triggers: photos_action}
 - ask_price: {triggers: price_level_action}
 - ask_atmosphere: {triggers: atmosphere_action}
@@ -51,7 +52,7 @@ intents:
 - ask_schedule: {triggers: schedule_action}
 - ask_help: {triggers: help_action}
 - more_results: {triggers: more_results_action}
-- restart
+- restart: {triggers: action_restart}
 - thanks: {triggers: utter_noworries}
 - ask_specific_facility
 - mood_great
@@ -59,10 +60,24 @@ intents:
 
 responses:
   utter_init:
-  - text: Hey there! :) I will help you find the best place to eat, drink or have
-          a coffee. I am still under development so please type "restart" if
-          something wrong comes up. Also, if you get stuck, ask me for help by
-          typing "help". Let's get started!
+  - text: "Hey there! u'\U0001F539'\n
+           I'm bot appetit and I will help you find the best place to eat, drink
+           or have a coffee. Here's a little tutorial.\n
+           ----\n
+           Search for a restaurant, bar or cafe. Choose the place
+           you like, and after that you can ask me details like:\n
+           \tu'\U0001F539' price level\n
+           \tu'\U0001F539' rating\n
+           \tu'\U0001F539' review information\n
+           \tu'\U0001F539' address\n
+           \tu'\U0001F539' website\n
+           \tu'\U0001F539' phone\n
+           \tu'\U0001F539' schedule\n
+           If I ever get stuck, restart me by typing 'restart'. After that,
+           greet me to start a fresh conversation.\n
+           ----\n
+           Review the tutorial by typing 'help'
+           Let's get started!"
   utter_greet:
   - text: What are you looking for? :D
   - text: :D Please choose one of the following options
@@ -109,6 +124,18 @@ responses:
 
   utter_sorry_specific:
   - text: Sorry, I cannot search for {facility_name} now, please type 'restart'.
+  utter_help:
+  - text: "Here to help! Search for a restaurant, bar or cafe. Choose the place
+           you like, and after that you can ask me details like:\n
+           \tu'\U0001F539' price level\n
+           \tu'\U0001F539' rating\n
+           \tu'\U0001F539' review information\n
+           \tu'\U0001F539' address\n
+           \tu'\U0001F539' website\n
+           \tu'\U0001F539' phone\n
+           \tu'\U0001F539' schedule\n
+           If I ever get stuck, restart me by typing 'restart'. After that,
+           greet me to start a fresh conversation."
 
 session_config:
   carry_over_slots_to_new_session: false

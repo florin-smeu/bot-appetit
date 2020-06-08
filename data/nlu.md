@@ -269,6 +269,15 @@
 - Is it a good [bar](facility_type)?
 - Can you tell me more about it?
 
+## intent:ask_reviews
+- Can you show me reviews?
+- reviews
+- review
+- I want reviews
+- Show me reviews
+- Give me reviews
+- Can I see some reviews?
+
 ## intent:ask_phone
 - Can I call them?
 - Call

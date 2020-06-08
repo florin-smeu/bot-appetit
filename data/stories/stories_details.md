@@ -23,6 +23,13 @@
 > detail_asked
 
 
+## ask reviews
+> printed_details
+* ask_reviews
+    - atmosphere_action
+    - review_summary_action
+> detail_asked
+
 ## ask phone
 > printed_details
 * ask_phone

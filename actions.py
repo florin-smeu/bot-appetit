@@ -109,9 +109,6 @@ class Details:
 
         result = result["result"]
 
-        #with open("details" + result["name"].replace(" ", "") + ".json", "w") as f:
-        #    json.dump(result, f, ensure_ascii=False, indent=4)
-
         if "opening_hours" in result:
             self.opening_hours = result["opening_hours"]
 
@@ -148,7 +145,6 @@ class Details:
 
 class Photo:
     """Class that stores all the information about a photo of a facility"""
-    #MAX_WIDTH = 764
     MAX_WIDTH = 700
 
     ENDPOINTS = {
@@ -258,7 +254,8 @@ class MessengerUtil:
 
         for photo in photos:
             default_action = MessengerUtil.create_default_action(type="web_url",
-                                                                 url=MessengerUtil.MAPS_ENDPOINTS.format(facility_type, place_id))
+                                                                 url=MessengerUtil.MAPS_ENDPOINTS.format(facility_type,
+                                                                                                         place_id))
 
             if photo == NO_PHOTO:
                 element = MessengerUtil.create_template_element(title=title,
@@ -482,26 +479,6 @@ class FindFacilitiesAction(Action):
 
         FindFacilitiesAction.print_facilities(dispatcher, tracker, domain, results)
         return [SlotSet("facility_list", results)]
-        """
-
-        buttons = []
-        # limit number of results to 3 for clear presentation purposes
-        max_facilities = min(FindFacilitiesAction.MAX_FACILITIES, len(results))
-        for r in results[:3]:
-            name = r["name"]
-            place_id = r["place_id"]
-            payload = "/inform{\"place_id\":\"" + place_id + "\", \"facility_name\":\"" + name + "\"}"
-            buttons.append(
-                {"title": "{}".format(name), "payload": payload})
-        if len(buttons) == 1:
-            message = "Here is a {} near you:".format(button_name)
-        else:
-            message = "Here are {} {}s near you:".format(len(buttons),
-                                                         button_name)
-        dispatcher.utter_message(text=message, buttons=buttons)
-        return []
-        """
-
 
 class DetailsForm(FormAction):
     """This form class retrieves the address of the user's
@@ -977,22 +954,6 @@ class MoreResultsAction(Action):
 
         facility_list = tracker.get_slot("facility_list")
         FindFacilitiesAction.print_facilities(dispatcher, tracker, domain, facility_list)
-        return []
-
-class HelpAction(Action):
-    def name(self) -> Text:
-        return "help_action"
-
-    def run(self,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List:
-
-        message = "Here to help. First, you can choose a facility. After " + \
-                  "that I  can show you more details like price level, " + \
-                  "address, rating, phone, website, you just have to ask. ;) " + \
-                  "If I ever get stuck, restart me by typing 'restart'."
-        dispatcher.utter_message(message)
         return []
 
 class ActionRestart(Action):

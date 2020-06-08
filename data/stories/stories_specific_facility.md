@@ -10,6 +10,8 @@
     - photos_action
     - address_action
     - utter_ask_more
+> printed_details
+
 
 ## specific facility after printed details name type
 > printed_details
@@ -48,6 +50,7 @@
     - photos_action
     - address_action
     - utter_ask_more
+> printed_details
 
 ## specific facility after printed details name
 > printed_details
