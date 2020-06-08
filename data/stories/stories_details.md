@@ -1,11 +1,11 @@
 ## ask price
-> details_done
+> printed_details
 * ask_price
     - price_level_action
 > detail_asked
 
 ## ask atmosphere with reviews
-> details_done
+> printed_details
 * ask_atmosphere
     - atmosphere_action
     - utter_ask_reviews
@@ -14,7 +14,7 @@
 > detail_asked
 
 ## ask atmosphere without reviews
-> details_done
+> printed_details
 * ask_atmosphere
     - atmosphere_action
     - utter_ask_reviews
@@ -24,38 +24,31 @@
 
 
 ## ask phone
-> details_done
+> printed_details
 * ask_phone
     - phone_action
 > detail_asked
 
 ## ask website
-> details_done
+> printed_details
 * ask_website
     - website_action
 > detail_asked
 
 ## ask address
-> details_done
+> printed_details
 * ask_address
     - address_action
 > detail_asked
 
 ## ask schedule
-> details_done
+> printed_details
 * ask_schedule
     - schedule_action
 > detail_asked
 
 ## ask photos
-> details_done
+> printed_details
 * ask_photos
     - photos_action
-> detail_asked
-
-
-## more results
-> details_done
-* more_results
-    - more_results_action
 > detail_asked

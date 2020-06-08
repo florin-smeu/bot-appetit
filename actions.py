@@ -889,8 +889,7 @@ class AddressAction(Action):
 
         facility_type = tracker.get_slot("facility_type")
         address = ADDRESS_DICT.get("name")
-        print(address)
-        print(facility_details["address"])
+
         if address in facility_details:
             value = facility_details[address]
             msg_pos = random.randint(1, 3)
@@ -940,7 +939,7 @@ class ScheduleAction(Action):
 
         facility_type = tracker.get_slot("facility_type")
         weekday = WEEKDAY_DICT.get("name")
-        if weekday in facility_details["opening_hours"]:
+        if "opening_hours" in facility_details and weekday in facility_details["opening_hours"]:
             value = facility_details["opening_hours"][weekday]
             weekday_text = ""
             for day in value:
@@ -954,7 +953,7 @@ class ScheduleAction(Action):
         dispatcher.utter_message(message)
 
         open_now = OPENNOW_DICT.get("name")
-        if open_now in facility_details["opening_hours"]:
+        if "opening_hours" in facility_details and open_now in facility_details["opening_hours"]:
             value = facility_details["opening_hours"][open_now]
             if value is True:
                 message = OPENNOW_DICT.get("messages")[2]

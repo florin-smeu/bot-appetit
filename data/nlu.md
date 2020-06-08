@@ -232,8 +232,6 @@
 - I need a [restaurant](facility_type) in [Bucharest](location)
 - I am looking for a [restaurant](facility_type)
 - Give me a [restaurant](facility_type) in [Lujerului Bucharest](location)
-- I need the address of [restaurant](facility_type) [Capsa](facility_name) in [Bucharest](location)
-- Can you tell me where is the [bar](facility_type) called [St Partick](facility_name) in [Bucharest](location)?
 
 ## intent:ask_photos
 - Can you show me some photos?
@@ -311,6 +309,7 @@
 - When can I go there?
 
 ## intent:ask_help
+- I have a problem
 - Seems like a problem
 - I need help
 - Can you help me?
@@ -332,8 +331,9 @@
 - I want another [bar](facility_type)
 
 ## intent:ask_specific_facility
+- Show me details about [Gram Bistro](facility_name)
+- I want details about [Gram Bistro](facility_name)
 - I want to find details about the [Trattoria Buongiorno Victoriei](facility_name) [restaurant](facility_type)
-- Can you tell me more about the [Trattoria Buongiorno Victoriei](facility_name) [restaurant](facility_type)
 - I need to know where is the [Trattoria Buongiorno Victoriei](facility_name) [restaurant](facility_type)
 - Find me [Trattoria Buongiorno Victoriei](facility_name) [restaurant](facility_type)
 - Give me [Trattoria Buongiorno Victoriei](facility_name) [restaurant](facility_type)

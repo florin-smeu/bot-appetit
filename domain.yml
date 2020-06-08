@@ -51,7 +51,7 @@ intents:
 - ask_schedule: {triggers: schedule_action}
 - ask_help: {triggers: help_action}
 - more_results: {triggers: more_results_action}
-- restart: {triggers: action_restart}
+- restart
 - thanks: {triggers: utter_noworries}
 - ask_specific_facility
 - mood_great
@@ -90,6 +90,9 @@ responses:
   - text: Please provide your city name, area or zip code to help me search for a {facility_type}.
   - text: Please enter your area or city name in order to find a local {facility_type}.
   - text: One more thing. Where would you like to search for a {facility_type}?
+  utter_ask_location_and_type:
+  - text: I need to know whether you are looking for a cafe, restaurant or bar. And also the location.
+
   utter_ask_details:
   - text: Could you choose a facility first?
   utter_ask_correct_params:
@@ -103,6 +106,9 @@ responses:
   - text: Would you like to read some reviews?
   - text: Should I search for some reviews?
   - text: Do you want to see some reviews?
+
+  utter_sorry_specific:
+  - text: Sorry, I cannot search for {facility_name} now, please type 'restart'.
 
 session_config:
   carry_over_slots_to_new_session: false
