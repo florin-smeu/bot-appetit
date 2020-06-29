@@ -5,7 +5,7 @@
 #### A restaurant chatbot implemented using the [RASA](https://rasa.com/) framework
 
 #### Functionality
-Lorem impsum dolor sit amet.
+The chatbot is capable of showing pictures of places, as well  as other details.
 
 #### Implementation
-Another lorem ipsum dolor sit amet.
+The implemntation was made using the RASA framework. Information was extracted from Google Places API. The chatbot was integrated into Facebook Messenger platform.
