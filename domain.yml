@@ -42,7 +42,7 @@ intents:
 - goodbye: {triggers: utter_goodbye}
 - inform
 - search_provider
-- ask_reviews
+- ask_reviews: {triggers: review_summary_action}
 - ask_photos: {triggers: photos_action}
 - ask_price: {triggers: price_level_action}
 - ask_atmosphere: {triggers: atmosphere_action}
@@ -124,6 +124,12 @@ responses:
 
   utter_sorry_specific:
   - text: Sorry, I cannot search for {facility_name} now, please type 'restart'.
+
+  utter_ask_specific:
+  - text: What's the name of the place where you want to go?
+  - text: Great! Tell me where do you want to go
+
+
   utter_help:
   - text: "Here to help! Search for a restaurant, bar or cafe. Choose the place
           you like, and after that you can ask me details like:\n
