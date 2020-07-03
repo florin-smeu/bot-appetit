@@ -66,4 +66,4 @@
 
 ## help
 * ask_help
-    - help_action
+    - utter_help
